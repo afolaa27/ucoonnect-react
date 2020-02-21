@@ -11,9 +11,9 @@ Uconnect is a book selling app that enables students **sell** books to people th
 - React
 - Flask
 - Javascript
-- python
-- sqlite
-- peewee
+- Python
+- Sqlite
+- Peewee
 
 
 ## WireFrame
@@ -56,6 +56,11 @@ class Book(Model){
 	Sold = BooleanField()
 	favorite = BooleanField()
 	owner = ForeignKeyField(User, backref='Books')
+}
+class Favorite(Model){
+	
+	UserId = ForeignKeyField(User, backref='Favorite')
+	Book_Id =ForeignKeyField(Book, backref='Favorite')
 }
 **
 
