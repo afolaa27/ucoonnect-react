@@ -30,16 +30,19 @@ Uconnect is a book selling app that enables students **sell** books to people th
 
 
 ## Models
--class User(UserMixin,Model):
+-class User(UserMixin,Model){
 	username = CharField(unique=True)
 	location = BigIntegerField()
 	age = IntegerField()
 	email = CharField(unique=True)
 	password = CharField()
 	range = IntegerField()
+	
+}
 
 
--class Book(Model):
+-class Book(Model){
+	
 	title = CharField()
 	ISBN = DateTimeField()
 	description = TextField()
@@ -47,6 +50,7 @@ Uconnect is a book selling app that enables students **sell** books to people th
 	Sold = BooleanField()
 	favorite = BooleanField()
 	owner = ForeignKeyField(User, backref='Books')
+}
 **
 
 
