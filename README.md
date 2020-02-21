@@ -8,6 +8,12 @@
 Uconnect is a book selling app that enables students **sell** books to people that are **close** to them, one of the top priorities for this app is to allow the students to select their schools when signing up and it displays search results based on books that were posted by users in the same school.
 
 ### `Technology`
+-React
+-Flask
+-Javascript
+-python
+-sqlite
+-peewee
 
 
 ## WireFrame
