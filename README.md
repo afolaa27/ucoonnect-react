@@ -14,9 +14,12 @@ Uconnect is a book selling app that enables students **sell** books to people th
 - Python
 - Sqlite
 - Peewee
+- Semantic-ui
+- Google Maps Api
 
 
 ## WireFrame
+![our wireframe](./images/Wireframe1.png)
 
 
 ## User Story
