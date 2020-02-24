@@ -19,7 +19,7 @@ Uconnect is a book selling app that enables students **sell** books to people th
 
 
 ## WireFrame
-![our wireframe](./images/Wireframe1.png)	
+![our wireframe](../images/Wireframe1.png)	
 
 
 ## User Story
