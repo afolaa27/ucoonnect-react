@@ -40,7 +40,10 @@ Uconnect is a book selling app that enables students **sell** books to people th
 ## Routes
 | Verb | Routes | Function|
 |------|--------|---------|
-|GET   |
+|GET   |/books  |Shows all books|
+|------|--------|---------|
+|GET   |/users/login|Logs in user|
+|------|--------|---------|
 
 ## Models
 class User(UserMixin,Model){
