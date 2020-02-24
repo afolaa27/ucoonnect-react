@@ -41,9 +41,15 @@ Uconnect is a book selling app that enables students **sell** books to people th
 | Verb | Routes | Function|
 |------|--------|---------|
 |GET   |/books  |Shows all books|
-|------|--------|---------|
 |GET   |/users/login|Logs in user|
-|------|--------|---------|
+|POST  |/users/register|Registers a user|
+|GET   |/books/id|Shows info of a specific book|
+|POST  |/books|creates new book|
+|PUT   |/books/:id|Updates a book|
+|DELETE|/books/:id|Deletes a book|
+|POST  |/favorite/:id|favorites a book for a user|
+|GET   |/books/:zip|Gets book near a zip code|
+|GET   |/books/:isbn|Finds books using isbn|
 
 ## Models
 class User(UserMixin,Model){
