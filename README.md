@@ -12,9 +12,9 @@ Uconnect is a book selling app that enables students **sell** books to people th
 - Flask
 - Javascript
 - Python
-- Sqlite
+- Postgrees
 - Peewee
-- Semantic-ui
+- Semantic-ui-react
 - Google Maps Api
 
 
@@ -50,6 +50,7 @@ Uconnect is a book selling app that enables students **sell** books to people th
 |POST  |/favorite/:id|favorites a book for a user|
 |GET   |/books/:zip|Gets book near a zip code|
 |GET   |/books/:isbn|Finds books using isbn|
+|GET   |/books/choice|Finds books depends on user selection|
 
 ## Models
 class User(UserMixin,Model){
@@ -68,7 +69,7 @@ class User(UserMixin,Model){
 class Book(Model){
 
 	title = CharField()
-	ISBN = DateTimeField()
+	ISBN = CharField()
 	description = TextField()
 	created_date = DateTimeField(default=datetime.datetime.now)
 	Sold = BooleanField()
