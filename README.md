@@ -19,7 +19,7 @@ Uconnect is a book selling app that enables students **sell** books to people th
 
 
 ## WireFrame
-![our wireframe](./images/Wireframe1.png)
+![our wireframe](./images/Wireframe1.png)	
 
 
 ## User Story
@@ -37,16 +37,22 @@ Uconnect is a book selling app that enables students **sell** books to people th
 - User should be able to change their schools. 
 - User should be able to logout. 
 
+## Routes
+| Verb | Routes | Function|
+|------|--------|---------|
+|GET   |
 
 ## Models
 class User(UserMixin,Model){
 
 	username = CharField(unique=True)
-	location = BigIntegerField()
+	latitude = DecimalField()
+	longitude = DecimalField()
 	age = IntegerField()
 	email = CharField(unique=True)
 	password = CharField()
 	range = IntegerField()
+	school = CharField()
 }
 
 
@@ -65,7 +71,7 @@ class Favorite(Model){
 	UserId = ForeignKeyField(User, backref='Favorite')
 	Book_Id =ForeignKeyField(Book, backref='Favorite')
 }
-**
+
 
 
 
