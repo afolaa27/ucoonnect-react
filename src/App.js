@@ -8,12 +8,12 @@ class App extends Component {
     this.state={
       loggedIn : false,
       loggedInUserEmail : null,
-
     }
   }
 
   register = async(registerInfo)=>{
     const url = process.env.REACT_APP_API_URL + '/api/v1/users/register'
+    console.log("Url ==== >> ", process.env.REACT_APP_API_URL);
     try{
       const registerResponse = await fetch(url,{
         credentials:'include',
@@ -38,11 +38,12 @@ class App extends Component {
     }
   }
   render(){
+    console.log(process.env)
       return(
       <div className="App"> 
        
           <div>
-          <LoginRegisterForm/>
+          <LoginRegisterForm register={this.register}/>
 
           </div>
         

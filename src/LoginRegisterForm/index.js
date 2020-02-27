@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form,Button, Search} from 'semantic-ui-react'
+import {Form,Button, Search, Message, Icon} from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 import schoolKey from './schools'
@@ -16,7 +16,8 @@ class LoginRegisterForm extends Component{
 			age:'',
 			school:'',
 			action:'login',
-			regexEmail: new RegExp('/[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm'),
+			regexEmail: new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'),
+			regexPassword: new RegExp('(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]){8,}'),
 			message : '',
 			displayMessage: false
 		}
@@ -24,37 +25,60 @@ class LoginRegisterForm extends Component{
 	switchForm =()=>{
 		if(this.state.action ==='login'){
 			this.setState({
-				action:'register'
+				action:'register',
+				displayMessage: false
 			})
 		}
 		else{
 			this.setState({
-				action:'login'
+				action:'login',
+				displayMessage: false
 			})
 		}
 	}
-	 handleSelectChange = (e, { value, name }) => this.setState({ [name]:value })
+	handleSelectChange = (e, { value, name }) => this.setState({ [name]:value })
+
 	handleChange=(event)=>{
 
-
-		console.log('event.target.value >>>', event.target.value);
-		console.log('event.target.name >>>', event.target.name);
-
 		this.setState({
-			[event.target.name]: event.target.value
+			[event.target.name]: event.target.value,	
+			displayMessage:false
 		})
 	}
 	formValidation=()=>{
+		console.log("this.state on formValidation >>> ", this.state);
+		console.log("regex for email >>> ",this.state.regexEmail.test(this.state.email));
 		if (this.state.action == 'register'){
-			if(this.state.email==''|| !this.state.regexEmail.test(this.state.email)){
 
+			if(this.state.email=='' || !this.state.regexEmail.test(this.state.email)){
+				
+				this.setState({
+					message:"Enter valid Email",
+					displayMessage : true
+				})
+			console.log("regex for password>>>>",this.state.regexPassword.test(this.state.password))
+			}else if(this.state.password==''|| !this.state.regexPassword.test(this.state.password)){
+				
+				this.setState({
+					message:"Password should contain at least one digit,one lower case, one upper case",
+					displayMessage : true
+				})
+			}else{
+				this.props.register(this.state)
 			}
 		}
+		if(this.state.action == 'login'){
+
+		}
+
+
 	}
 
 	render(){
-		console.log("this is state >>>>" , this.state);
+		console.log("this is state >>>>" , this.state.regexPassword.test(this.state.password));
 			return(
+			<div>
+				
 			<div className='LoginRegisterForm'> 
 
 				<div className='formDiv'>
@@ -74,7 +98,8 @@ class LoginRegisterForm extends Component{
 				}
 					<Form.Field className='input'>
 						<label>Email</label>
-						<input placeholder='johndoe@gmail.com' type='email'
+						<input placeholder='johndoe@gmail.com' type='text'
+						required={true}
 						name='email'
 						value={this.state.email}
 						onChange={this.handleChange} 
@@ -83,6 +108,7 @@ class LoginRegisterForm extends Component{
 					<Form.Field className='input'>
 						<label>password</label>
 						<input placeholder='Password' type='password'
+						required={true}
 						name='password'
 						value={this.state.password}
 						onChange={this.handleChange}/>
@@ -94,6 +120,7 @@ class LoginRegisterForm extends Component{
 					<Form.Field className='input'>
 						<label>Age</label>
 						<input placeholder='Enter Age' type='number'
+						required={true}
 						name='age'
 						value={this.state.age}
 						onChange={this.handleChange}/>
@@ -103,6 +130,7 @@ class LoginRegisterForm extends Component{
             				label='School'
             				name='school'
             				options={schoolKey}
+            				required={true}
             				placeholder='School'
             				value={this.state.school}
 							onChange={this.handleSelectChange}
@@ -122,13 +150,26 @@ class LoginRegisterForm extends Component{
 				{
 					this.state.action ==='register'
 					?
-					<small> if you have an account Log in <span className="link" onClick={this.switchForm}>here</span>.</small>
+					<small> if you have an account log in <Icon link name="sign-in" onClick={this.switchForm}/></small>
 
 					:
-					<small> dont have an account Sign up <span className="link" onClick={this.switchForm}>here</span>!</small>
+					<small> dont have an account sign up <Icon link name="signup" onClick={this.switchForm}></Icon></small>
 				}
 				</div>
 				
+			</div>
+			<div className='message' >
+				{
+					this.state.displayMessage
+					?
+					<Message color='black' size='mini'
+	    				header='Notice !'
+	   					 content={this.state.message}
+	  					/>
+	  				:
+	  				null
+				}
+				</div>	
 			</div>
 			)
 		}
