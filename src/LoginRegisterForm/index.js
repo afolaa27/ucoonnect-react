@@ -64,8 +64,9 @@ class LoginRegisterForm extends Component{
 					displayMessage : true
 				})
 			}else{
+				console.log(this.props.userExists);
 				this.props.register(this.state)
-				if(this.props.userExists===true){
+				if(this.props.userExists === 'yes'){
 					this.setState({
 						message:"User with that username or Email exists",
 						displayMessage: true

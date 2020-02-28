@@ -8,7 +8,7 @@ class App extends Component {
     this.state={
       loggedIn : false,
       loggedInUserEmail : null,
-      userExists: true
+      userExist: ''
     }
   }
 
@@ -29,9 +29,13 @@ class App extends Component {
         this.setState({
           loggedIn:true,
           loggedInUserEmail:registerJson.data.email,
-          userExists: false
+          userExist: 'no'
         })
-      }
+      } if(registerResponse.status===401){
+          this.setState({
+            userExist:'yes'
+          })
+        }
       
     }
     catch(err){
@@ -54,9 +58,10 @@ class App extends Component {
         const loginJson = await loginResponse.json()
         if(loginResponse.status ===200){
           this.setState({
+            
+
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,
-            userExists: false
           })
         }
       }
@@ -71,7 +76,7 @@ class App extends Component {
       <div className="App"> 
        
           <div>
-          <LoginRegisterForm register={this.register} userExists={this.state.userExists} login={this.login}/>
+          <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login}/>
 
           </div>
         
