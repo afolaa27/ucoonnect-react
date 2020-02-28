@@ -8,12 +8,13 @@ class App extends Component {
     this.state={
       loggedIn : false,
       loggedInUserEmail : null,
+      userExists: true
     }
   }
 
   register = async(registerInfo)=>{
     const url = process.env.REACT_APP_API_URL + '/api/v1/users/register'
-    console.log("Url ==== >> ", process.env.REACT_APP_API_URL);
+    
     try{
       const registerResponse = await fetch(url,{
         credentials:'include',
@@ -28,8 +29,10 @@ class App extends Component {
         this.setState({
           loggedIn:true,
           loggedInUserEmail:registerJson.data.email,
+          userExists: false
         })
       }
+      
     }
     catch(err){
       if(err){
@@ -37,13 +40,38 @@ class App extends Component {
       }
     }
   }
+    login = async(loginInfo)=>{
+      const url = process.env.REACT_APP_API_URL + '/api/v1/users/login'
+      try{
+        const loginResponse = await fetch(url,{
+          credentials: 'include',
+          method:'POST',
+          body: JSON.stringify(loginInfo),
+          headers:{
+            'Content-Type' : 'application/json'
+          }
+        })
+        const loginJson = await loginResponse.json()
+        if(loginResponse.status ===200){
+          this.setState({
+            loggedIn:true,
+            loggedInUserEmail: loginJson.data.email,
+            userExists: false
+          })
+        }
+      }
+      catch(err){
+        console.error(err)
+      }
+
+    }
   render(){
     console.log(process.env)
       return(
       <div className="App"> 
        
           <div>
-          <LoginRegisterForm register={this.register}/>
+          <LoginRegisterForm register={this.register} userExists={this.state.userExists} login={this.login}/>
 
           </div>
         

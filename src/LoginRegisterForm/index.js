@@ -48,16 +48,16 @@ class LoginRegisterForm extends Component{
 	formValidation=()=>{
 		console.log("this.state on formValidation >>> ", this.state);
 		console.log("regex for email >>> ",this.state.regexEmail.test(this.state.email));
-		if (this.state.action == 'register'){
+		if (this.state.action === 'register'){
 
-			if(this.state.email=='' || !this.state.regexEmail.test(this.state.email)){
+			if(this.state.email==='' || !this.state.regexEmail.test(this.state.email)){
 				
 				this.setState({
 					message:"Enter valid Email",
 					displayMessage : true
 				})
 			console.log("regex for password>>>>",this.state.regexPassword.test(this.state.password))
-			}else if(this.state.password==''|| !this.state.regexPassword.test(this.state.password)){
+			}else if(this.state.password===''|| !this.state.regexPassword.test(this.state.password)){
 				
 				this.setState({
 					message:"Password should contain at least one digit,one lower case, one upper case",
@@ -65,10 +65,21 @@ class LoginRegisterForm extends Component{
 				})
 			}else{
 				this.props.register(this.state)
+				if(this.props.userExists===true){
+					this.setState({
+						message:"User with that username or Email exists",
+						displayMessage: true
+					})
+				}else{
+					this.setState({
+						displayMessage:false
+					})
+				}
 			}
 		}
 		if(this.state.action == 'login'){
-
+			this.props.login(this.state)
+			
 		}
 
 
@@ -93,6 +104,7 @@ class LoginRegisterForm extends Component{
 						value={this.state.username}
 						onChange={this.handleChange}/>
 					</Form.Field>
+
 					:
 					null
 				}
