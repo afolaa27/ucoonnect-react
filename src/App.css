@@ -1,3 +1,6 @@
 body{
-	background-color: #EEE2DC;
+	background-color: lightgrey;
+}
+.ui.menu {
+    border-radius: 0px !important;
 }

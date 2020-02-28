@@ -1,5 +1,6 @@
 import React from 'react'
-import { Item, Button, Image, Container } from 'semantic-ui-react'
+import { Item, Button, Image, Container,Icon } from 'semantic-ui-react'
+import '../index.css'
 
 function BoookList(props){
 	console.log(props.books);
@@ -14,7 +15,7 @@ function BoookList(props){
 							{book.title}
 						</Item.Header>
 						<Item.Meta>
-							{book.ISBN}
+							ISBN :{book.ISBN}
 						</Item.Meta>
 						<Item.Meta>
 							${book.price}
@@ -23,8 +24,8 @@ function BoookList(props){
 							{book.description}
 						</Item.Description>
 						<Item.Extra>
-							<Button floated="right">Delete</Button>
-							<Button floated="left">Edit</Button>
+							<Button floated="right" size='small' ><Icon name='trash'></Icon>Delete</Button>
+							<Button floated="left" size='small'><Icon name='edit'></Icon>Edit</Button>
 						</Item.Extra>
 					</Item.Content>
 				</Item>
@@ -33,7 +34,10 @@ function BoookList(props){
 			)
 	})
 	return(
-		<Container item>
+		 
+
+		<Container className="listContainer">
+
 		<Item.Group divided>
 			{books}
 		</Item.Group>

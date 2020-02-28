@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import LoginRegisterForm from './LoginRegisterForm'
 import BookContainer from './BookContainer'
+import NavBarContainer from './NavBarContainer'
 import './App.css'
 
 class App extends Component {
@@ -69,6 +70,24 @@ class App extends Component {
       }
 
     }
+   logout = async ()=>{
+    
+    const url = process.env.REACT_APP_API_URL+'/api/v1/users/logout'
+    try{
+      const logoutResponse = await fetch(url,{
+          credentials : 'include'
+        })
+        if(logoutResponse.status === 200){
+          this.setState({
+            loggedIn : false,
+            loggedInUserEmail: null,
+          })
+        }
+      }
+        catch(err){
+          console.error(err)
+      }
+   }
   render(){
     console.log(process.env)
       return(
@@ -76,9 +95,13 @@ class App extends Component {
        {
         this.state.loggedIn
         ?
+        <div>
+          <NavBarContainer logout={this.logout}/>
           <BookContainer/>
+        </div>
         :
           <div>
+
           <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login}/>
 
           </div>

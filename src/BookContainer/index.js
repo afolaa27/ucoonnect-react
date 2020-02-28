@@ -1,19 +1,22 @@
 import React, {Component} from 'react'
 import BookList from '../BookList'
 
+import '../index.css'
 
-import {Button} from 'semantic-ui-react'
+import {Button, Message} from 'semantic-ui-react'
 
 
 class BookContainer extends Component{
 	constructor(props){
 		super(props)
 		this.state={
-			books : []
+			books : [],
+			visible : true
 		}
 	}
 	componentDidMount(){
 		this.getBooks()
+		this.handleDismiss()
 	}
 	getBooks = async()=>{
 		try{
@@ -34,10 +37,31 @@ class BookContainer extends Component{
 			console.log(err)
 		}
 	}
+	 handleDismiss = () => {
+      setTimeout(() => {
+        this.setState({ visible: false })
+      }, 2700)
+    }
+	
 	render(){
-			// console.log("the state of books before sent to book list container>>", this.state.books);
+			
 			return(
 			<div> 
+				
+      			
+      			<div className="listContainer">
+				{
+					this.state.visible
+					?
+        			<Message size='mini'
+          				header='Welcome back!'
+          				content=''
+        			/>
+        			: 
+        			null
+        		}
+        		</div>
+      
 				<BookList books={this.state.books}/>
 			</div>
 			)
