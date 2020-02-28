@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import LoginRegisterForm from './LoginRegisterForm'
+import BookContainer from './BookContainer'
 import './App.css'
 
 class App extends Component {
@@ -58,8 +59,6 @@ class App extends Component {
         const loginJson = await loginResponse.json()
         if(loginResponse.status ===200){
           this.setState({
-            
-
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,
           })
@@ -74,11 +73,16 @@ class App extends Component {
     console.log(process.env)
       return(
       <div className="App"> 
-       
+       {
+        this.state.loggedIn
+        ?
+          <BookContainer/>
+        :
           <div>
           <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login}/>
 
           </div>
+       }
         
       </div>
       )

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form,Button, Search, Message, Icon} from 'semantic-ui-react'
+import {Form,Button, Search, Message, Icon, Dropdown} from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 import schoolKey from './schools'
@@ -98,17 +98,7 @@ class LoginRegisterForm extends Component{
 				{
 					this.state.action ==='register'
 					?
-					<Form.Field className='input'>
-						<label>Username</label>
-						<input placeholder='User Name'
-						name='username'
-						value={this.state.username}
-						onChange={this.handleChange}/>
-					</Form.Field>
 
-					:
-					null
-				}
 					<Form.Field className='input'>
 						<label>Email</label>
 						<input placeholder='johndoe@gmail.com' type='text'
@@ -117,6 +107,16 @@ class LoginRegisterForm extends Component{
 						value={this.state.email}
 						onChange={this.handleChange} 
 						/>
+					</Form.Field>
+					:
+					null
+				}
+					<Form.Field className='input'>
+						<label>Username</label>
+						<input placeholder='User Name'
+						name='username'
+						value={this.state.username}
+						onChange={this.handleChange}/>
 					</Form.Field>
 					<Form.Field className='input'>
 						<label>password</label>
@@ -139,7 +139,7 @@ class LoginRegisterForm extends Component{
 						onChange={this.handleChange}/>
 
 						<Form.Select  
-            				fluid
+            				search
             				label='School'
             				name='school'
             				options={schoolKey}
