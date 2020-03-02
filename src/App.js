@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import LoginRegisterForm from './LoginRegisterForm'
 import BookContainer from './BookContainer'
-import NavBarContainer from './NavBarContainer'
+
 import './App.css'
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state={
-      loggedIn : false,
+      loggedIn : true,
       loggedInUserEmail : null,
       userExist: ''
     }
@@ -96,8 +96,7 @@ class App extends Component {
         this.state.loggedIn
         ?
         <div>
-          <NavBarContainer logout={this.logout}/>
-          <BookContainer/>
+          <BookContainer logout={this.logout}/>
         </div>
         :
           <div>

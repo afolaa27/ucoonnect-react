@@ -1,16 +1,29 @@
 import React from 'react'
-import {Button, Menu, Input, icon} from 'semantic-ui-react'
+import { Menu} from 'semantic-ui-react'
+
 
 
 function Navbar(props){
 			return(
+			
 			<div > 
 			<Menu inverted size='small'>
-		        <Menu.Item
-		          name='List'
-		 
-		          icon='add'
-		        />
+				{
+					props.homeState
+					?
+		        	<Menu.Item
+		          		name='List'
+		 		  		onClick={props.openModal}
+		          		icon='add'
+		       		 />
+		        	:
+					<Menu.Item
+		          		name='Home'
+		 		  		onClick={props.closeModal}
+		          		icon='home'
+		        	/>
+				}
+		      
 		        <Menu.Item
 		          name='Buy'
 		         

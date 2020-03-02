@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form,Button, Search, Message, Icon, Dropdown} from 'semantic-ui-react'
+import {Form,Button, Message, Icon,} from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 import schoolKey from './schools'
@@ -78,7 +78,7 @@ class LoginRegisterForm extends Component{
 				}
 			}
 		}
-		if(this.state.action == 'login'){
+		if(this.state.action === 'login'){
 			this.props.login(this.state)
 			
 		}
