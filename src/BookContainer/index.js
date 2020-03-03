@@ -67,6 +67,26 @@ class BookContainer extends Component{
 		}
 		this.closeAddBookModal()
 	}
+	deleteBook= async(id)=>{
+		try{
+		    const deleteResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/'+ id, {
+		    	method : 'DELETE',
+		    	credentials:'include'
+		    })
+		    const deleteJson = deleteResponse.json();
+		    if(deleteJson.status===200){
+		    	this.setState({
+		    		books: this.state.books.filter(book=>book.id !==id)
+		    	})
+		    }else{
+		    	throw new Error('Cant delete this book')
+		    }
+		  }
+		    catch(err){
+		      console.error(err)
+		  }
+		  this.getBooks()
+	}
 	openAddBookModal=()=>{
 		this.setState({
 			addBookModalVisible: true,
@@ -105,7 +125,7 @@ class BookContainer extends Component{
 
 				this.state.state
 				?
-				<BookList books={this.state.books}/>
+				<BookList books={this.state.books} delete={this.deleteBook}/>
 				:
 				<AddBookModal listBook={this.addBook}/>
 			}

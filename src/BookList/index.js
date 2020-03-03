@@ -23,13 +23,15 @@ function BoookList(props){
 						<Item.Description>
 							{book.description}
 						</Item.Description>
+						<Item.Meta>
+							Pickup Address: {book.address}
+						</Item.Meta>
 						<Item.Extra>
-							<Button floated="right" size='small' ><Icon name='trash'></Icon>Delete</Button>
+							<Button floated="right" size='small' onClick={()=>props.delete(book.id)}><Icon name='trash'></Icon>Delete</Button>
 							<Button floated="left" size='small'><Icon name='edit'></Icon>Edit</Button>
 						</Item.Extra>
 					</Item.Content>
 				</Item>
-			
 
 			)
 	})
