@@ -7,9 +7,17 @@ import '../index.css'
 
 const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
 
-class AddBookModal extends Component{
+class EditBookForm extends Component{
 	state = initialState
 
+	componentDidMount=()=>{
+		this.loadState()
+	}
+	loadState=()=>{
+		this.setState({
+			value : this.props.bookToEdit.address
+		})
+	}
 	getAddress=async()=>{
 		console.log("access_token", process.env.REACT_APP_API_TOKEN);
 		console.log("this is the add",this.state.value)
@@ -34,14 +42,6 @@ class AddBookModal extends Component{
 			console.log("results ", this.state.results);
 	}
 
-	handleChange=(event)=>{
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
-
-	}
-
-
 	handleSearchChange = (e, { value }) => {
     	this.setState({ isLoading: true, value })
 	    setTimeout(() => {
@@ -51,10 +51,12 @@ class AddBookModal extends Component{
 	      
     	  this.getAddress()
 	      this.setState({
-	        isLoading: false
+	        isLoading: false,
+	        
 	      })
 	 	}, 300)
   	}
+
 
   	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
@@ -89,6 +91,7 @@ class AddBookModal extends Component{
 
 	render(){
 			console.log("this is the state in book modal >> ",this.state)
+
 			return(
 			<div className='LoginRegisterForm'> 
 				<div className='formDiv'>
@@ -98,8 +101,8 @@ class AddBookModal extends Component{
 						<label>Title</label>
 						<input placeholder='Title'
 						name='title'
-						value={this.state.title}
-						onChange={this.handleChange}/>
+						value={this.props.bookToEdit.title}
+						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
 					<Form.Field className='input'>
@@ -108,8 +111,8 @@ class AddBookModal extends Component{
 						maxLength={13}
 						required={true}
 						name='ISBN'
-						value={this.state.ISBN}
-						onChange={this.handleChange}/>
+						value={this.props.bookToEdit.ISBN}
+						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
 					<Form.Field className='input'>
@@ -117,8 +120,8 @@ class AddBookModal extends Component{
 						<input placeholder='Price'
 						required={true}
 						name='price'
-						value={this.state.price}
-						onChange={this.handleChange}/>
+						value={this.props.bookToEdit.price}
+						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
 					<Form.Field className='input'>
@@ -126,8 +129,8 @@ class AddBookModal extends Component{
 						<input placeholder='Description' type='text'
 						required={true}
 						name='description'
-						value={this.state.description}
-						onChange={this.handleChange}/>
+						value={this.props.bookToEdit.description}
+						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
 					<Form.Field className='input'>
@@ -154,7 +157,7 @@ class AddBookModal extends Component{
 				          />
 					</Form.Field>
 
-					<Button type='Submit'>List Book</Button>
+					<Button type='Submit'>Update Book</Button>
 				</Container>
 				</Form>
 				</div>
@@ -163,4 +166,4 @@ class AddBookModal extends Component{
 		}
 }
 
-export default AddBookModal
+export default EditBookForm

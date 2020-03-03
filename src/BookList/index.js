@@ -1,5 +1,5 @@
 import React from 'react'
-import { Item, Button, Image, Container,Icon } from 'semantic-ui-react'
+import { Item, Button, Image, Container,Icon} from 'semantic-ui-react'
 import '../index.css'
 
 function BoookList(props){
@@ -28,7 +28,7 @@ function BoookList(props){
 						</Item.Meta>
 						<Item.Extra>
 							<Button floated="right" size='small' onClick={()=>props.delete(book.id)}><Icon name='trash'></Icon>Delete</Button>
-							<Button floated="left" size='small'><Icon name='edit'></Icon>Edit</Button>
+							<Button floated="left" size='small'onClick={()=>props.edit(book.id)}><Icon name='edit'></Icon>Edit</Button>
 						</Item.Extra>
 					</Item.Content>
 				</Item>
@@ -39,10 +39,11 @@ function BoookList(props){
 		 
 
 		<Container className="listContainer">
-
+		
 		<Item.Group divided>
 			{books}
 		</Item.Group>
+		
 		</Container>
 		)
 }

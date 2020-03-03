@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import BookList from '../BookList'
 import NavBarContainer from '../NavBarContainer'
 import AddBookModal from '../AddBookModal'
+import EditBookForm from '../EditBookForm'
 import '../index.css'
 
 import {Message} from 'semantic-ui-react'
@@ -13,8 +14,16 @@ class BookContainer extends Component{
 		this.state={
 			books : [],
 			visible : true,
-			addBookModalVisible : false,
-			state : true
+			addBookModalVisible : true,
+			state : true,
+			editVisible : false,
+			bookToEdit :{
+				title : '',
+				price : '',
+				description : '',
+				ISBN : '',
+				address : ''
+			}
 		}
 	}
 	componentDidMount(){
@@ -24,7 +33,7 @@ class BookContainer extends Component{
 	handleDismiss = () => {
 		setTimeout(() => {
 			this.setState({ visible: false })
-		}, 2700)
+		}, 2000)
 	}
 
 	getBooks = async()=>{	
@@ -87,21 +96,47 @@ class BookContainer extends Component{
 		  }
 		  this.getBooks()
 	}
+	editBook=async(id)=>{
+		const bookToEdit = this.state.books.find((book)=>book.id === id)
+			console.log('queried the books >>>>', bookToEdit)
+			this.setState({
+				editVisible: true,
+				state:false,
+				bookToEdit : {
+					...bookToEdit
+				}
+			})
+		
+
+	}
+	handleEditChange=(event)=>{
+		this.setState({
+			bookToEdit:{
+				...this.state.bookToEdit,
+				[event.target.name]: event.target.value
+			}
+		})
+	}
 	openAddBookModal=()=>{
 		this.setState({
-			addBookModalVisible: true,
-			state: false
+			addBookModalVisible: false,
+			state: false,
+			editVisible : false
 		})
 	}
 	
 	closeAddBookModal=()=>{
+
 		this.setState({
-			addBookModalVisible: false,
+			addBookModalVisible: true,
 			state : true
 		})
+
 	}
+
 	render(){
 
+		console.log('After setState the state >>>>', this.state.bookToEdit)
 		return(
 			<div> 
 
@@ -113,7 +148,7 @@ class BookContainer extends Component{
 			{
 				this.state.visible
 				?
-				<Message size='mini'
+				<Message size='mini' color='black'
 				header='Welcome back!'
 				content=''
 				/>
@@ -122,12 +157,17 @@ class BookContainer extends Component{
 			}
 			</div>
 			{
-
-				this.state.state
+				this.state.editVisible
 				?
-				<BookList books={this.state.books} delete={this.deleteBook}/>
+						
+					<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} statePassed={this.state.bookToEdit}/>
 				:
-				<AddBookModal listBook={this.addBook}/>
+					this.state.addBookModalVisible
+					?
+					<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+					:
+					<AddBookModal listBook={this.addBook}/>
+
 			}
 			</div>
 			)
