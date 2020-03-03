@@ -19,13 +19,11 @@ class EditBookForm extends Component{
 		})
 	}
 	getAddress=async()=>{
-		console.log("access_token", process.env.REACT_APP_API_TOKEN);
-		console.log("this is the add",this.state.value)
+		
 		const mapBox = await fetch(
 				'https://api.mapbox.com/geocoding/v5/mapbox.places/'+this.state.value+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
 			const mapBoxJson = await mapBox.json()
-			console.log("mapbox json >> ", mapBoxJson)	
-			console.log("lenth ", mapBoxJson.features);
+			
 
 			const arrOfResults = []
 			for(let i = 0; i<mapBoxJson.features.length; i++){
@@ -39,7 +37,7 @@ class EditBookForm extends Component{
 				this.setState({
 					results : arrOfResults
 				})
-			console.log("results ", this.state.results);
+			
 	}
 
 	handleSearchChange = (e, { value }) => {
@@ -52,7 +50,7 @@ class EditBookForm extends Component{
     	  this.getAddress()
 	      this.setState({
 	        isLoading: false,
-	        
+	        ...this.props.bookToEdit
 	      })
 	 	}, 300)
   	}
@@ -61,7 +59,7 @@ class EditBookForm extends Component{
   	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
   	handleSubmit = async(event)=>{
-  		console.log('the state>>.', this.state.formData)
+  		
   		event.preventDefault()
   		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
   		.then(res=>{
@@ -75,7 +73,9 @@ class EditBookForm extends Component{
 
   	}
   	submit=()=>{
- 		this.props.listBook(this.state)
+  		
+  		
+ 		this.props.updateBook(this.state)
  	}	
 
   	handleImageUpload = (e)=>{
@@ -90,8 +90,6 @@ class EditBookForm extends Component{
   	}
 
 	render(){
-			console.log("this is the state in book modal >> ",this.state)
-
 			return(
 			<div className='LoginRegisterForm'> 
 				<div className='formDiv'>

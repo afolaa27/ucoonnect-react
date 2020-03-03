@@ -11,8 +11,7 @@ class AddBookModal extends Component{
 	state = initialState
 
 	getAddress=async()=>{
-		console.log("access_token", process.env.REACT_APP_API_TOKEN);
-		console.log("this is the add",this.state.value)
+		
 		const mapBox = await fetch(
 				'https://api.mapbox.com/geocoding/v5/mapbox.places/'+this.state.value+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
 			const mapBoxJson = await mapBox.json()
@@ -31,7 +30,7 @@ class AddBookModal extends Component{
 				this.setState({
 					results : arrOfResults
 				})
-			console.log("results ", this.state.results);
+			
 	}
 
 	handleChange=(event)=>{
@@ -59,7 +58,7 @@ class AddBookModal extends Component{
   	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
   	handleSubmit = async(event)=>{
-  		console.log('the state>>.', this.state.formData)
+  	
   		event.preventDefault()
   		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
   		.then(res=>{
@@ -88,7 +87,7 @@ class AddBookModal extends Component{
   	}
 
 	render(){
-			console.log("this is the state in book modal >> ",this.state)
+		
 			return(
 			<div className='LoginRegisterForm'> 
 				<div className='formDiv'>

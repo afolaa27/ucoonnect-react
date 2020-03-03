@@ -52,7 +52,7 @@ class BookContainer extends Component{
 	}
 
 	addBook = async(bookToAdd)=>{
-		console.log("this is the book>>>", bookToAdd)
+	
 		try{
 			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/',{
 				method:'POST',
@@ -98,10 +98,9 @@ class BookContainer extends Component{
 	}
 	editBook=async(id)=>{
 		const bookToEdit = this.state.books.find((book)=>book.id === id)
-			console.log('queried the books >>>>', bookToEdit)
+			
+			this.openEditForm()
 			this.setState({
-				editVisible: true,
-				state:false,
 				bookToEdit : {
 					...bookToEdit
 				}
@@ -117,11 +116,74 @@ class BookContainer extends Component{
 			}
 		})
 	}
+	changeState=(bookEdited)=>{
+	
+		this.setState({
+			bookToEdit:{
+				...this.state.bookToEdit,
+				address : bookEdited.value
+			}
+		})
+	}
+	
+	updateBook= async (bookEdited)=>{
+		
+
+		const body = this.state.bookToEdit
+
+		body.image = bookEdited.image
+		body.address= bookEdited.value
+
+		try{
+		    const updateResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/'+this.state.bookToEdit.id,{
+		    	method:'PUT',
+		    	body : JSON.stringify(body),
+		    		credentials: 'include',
+		    	headers:{
+		    		'Content-Type' : 'application/json'
+		    	}
+		    })
+
+		    const updateResponseJson = await updateResponse.json();
+		    if(updateResponse.status===200){
+		    	const newBookUpdated = this.state.books.map((book)=>{
+		    		if(book.id === updateResponseJson.data.id){
+		    			return updateResponseJson.data
+		    		}else{
+		    			return book
+		    		}
+		    	})
+		    	this.setState({
+		    		books : newBookUpdated
+		    	})
+		    	this.closeEditForm()
+
+		    }
+		  }
+		    catch(err){
+		      console.log(err)
+		  }
+	}
+	openEditForm =()=>{
+		this.setState({
+
+			editVisible: true,
+			state:false,
+		})
+	}
+	closeEditForm =()=>{
+		this.setState({
+			addBookModalVisible: true,
+			editVisible: false,
+			state:false,
+		})
+	}
 	openAddBookModal=()=>{
+		this.openEditForm()
 		this.setState({
 			addBookModalVisible: false,
 			state: false,
-			editVisible : false
+			
 		})
 	}
 	
@@ -129,7 +191,8 @@ class BookContainer extends Component{
 
 		this.setState({
 			addBookModalVisible: true,
-			state : true
+			editVisible: false,
+			state : true	
 		})
 
 	}
@@ -160,7 +223,10 @@ class BookContainer extends Component{
 				this.state.editVisible
 				?
 						
-					<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} statePassed={this.state.bookToEdit}/>
+					<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
+					statePassed={this.state.bookToEdit}
+					updateBook={this.updateBook}
+					changeState={this.changeState}/>
 				:
 					this.state.addBookModalVisible
 					?
