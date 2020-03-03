@@ -43,19 +43,20 @@ class BookContainer extends Component{
 	}
 
 	addBook = async(bookToAdd)=>{
+		console.log("this is the book>>>", bookToAdd)
 		try{
 			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/',{
 				method:'POST',
 				body:JSON.stringify(bookToAdd),
 				credentials:'include',
-				header:{
+				headers:{
 					'Content-Type':'application/json'
 				}
 			})
 			const addBookJson = await addBookResponse.json()
 			if(addBookResponse.status === 201){
 				this.setState({
-					goals:[...this.state.books, addBookJson.data]
+					books:[...this.state.books, addBookJson.data]
 				})
 			}
 
@@ -102,11 +103,11 @@ class BookContainer extends Component{
 			</div>
 			{
 
-				!this.state.state
+				this.state.state
 				?
 				<BookList books={this.state.books}/>
 				:
-				<AddBookModal/>
+				<AddBookModal listBook={this.addBook}/>
 			}
 			</div>
 			)

@@ -1,33 +1,20 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
 import {Button, Container, Form, Search} from 'semantic-ui-react'
+import axios from 'axios'
 
 import '../index.css'
 
-const initialState = {isLoading:false, results: [], value:''}
+const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
 
 class AddBookModal extends Component{
-	// constructor(props){
-	// 	super(props)
-	// 		this.state={
-	// 			title:'',
-	// 			ISBN: '',
-	// 			price:'',
-	// 			description: '',
-	// 			address : '',
-	// 			MapAddress : [],
-	// 			loading : false
-			    
-	// 		}
-	// 	}
-
 	state = initialState
 
 	getAddress=async()=>{
 		console.log("access_token", process.env.REACT_APP_API_TOKEN);
 		console.log("this is the add",this.state.value)
 		const mapBox = await fetch(
-				'https://api.mapbox.com/geocoding/v5/mapbox.places/'+this.state.value+'.json?country=us&access_token='+process.env.REACT_APP_API_TOKEN)
+				'https://api.mapbox.com/geocoding/v5/mapbox.places/'+this.state.value+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
 			const mapBoxJson = await mapBox.json()
 			console.log("mapbox json >> ", mapBoxJson)	
 			console.log("lenth ", mapBoxJson.features);
@@ -41,15 +28,10 @@ class AddBookModal extends Component{
 					})
 			}
 
-
 				this.setState({
 					results : arrOfResults
 				})
-
-
 			console.log("results ", this.state.results);
-
-
 	}
 
 	handleChange=(event)=>{
@@ -61,15 +43,11 @@ class AddBookModal extends Component{
 
 
 	handleSearchChange = (e, { value }) => {
-
     	this.setState({ isLoading: true, value })
-
 	    setTimeout(() => {
 	      if (this.state.value.length < 1){
-	      	console.log("is this getting running??");
 	      	return this.setState(initialState)
 	      } 
-
 	      
     	  this.getAddress()
 	      this.setState({
@@ -78,13 +56,43 @@ class AddBookModal extends Component{
 	 	}, 300)
   	}
 
+  	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+
+  	handleSubmit = async(event)=>{
+  		console.log('the state>>.', this.state.formData)
+  		event.preventDefault()
+  		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
+  		.then(res=>{
+  			console.log("the image url",res.data.url)
+  			this.setState({
+  				image : res.data.url
+  			})
+  		})
+  		.then(()=> this.submit())
+
+
+  	}
+  	submit=()=>{
+ 		this.props.listBook(this.state)
+ 	}	
+
+  	handleImageUpload = (e)=>{
+  		const file = e.target.files[0]
+  		const fd = new FormData()
+  		fd.append('upload_preset', 'mufasa')
+  		console.log("the photo >>>",file)
+  		fd.append('file', file)
+  		this.setState({
+  			formData : fd
+  		})
+  	}
+
 	render(){
 			console.log("this is the state in book modal >> ",this.state)
 			return(
 			<div className='LoginRegisterForm'> 
-
 				<div className='formDiv'>
-				<Form>
+				<Form onSubmit={this.handleSubmit}>
 				<Container>
 					<Form.Field className='input'>
 						<label>Title</label>
@@ -93,6 +101,7 @@ class AddBookModal extends Component{
 						value={this.state.title}
 						onChange={this.handleChange}/>
 					</Form.Field>
+
 					<Form.Field className='input'>
 						<label>ISBN</label>
 						<input placeholder='ISBN' type='text'
@@ -101,13 +110,16 @@ class AddBookModal extends Component{
 						value={this.state.ISBN}
 						onChange={this.handleChange}/>
 					</Form.Field>
+
 					<Form.Field className='input'>
 						<label>Price</label>
 						<input placeholder='Price'
+						required={true}
 						name='price'
 						value={this.state.price}
 						onChange={this.handleChange}/>
 					</Form.Field>
+
 					<Form.Field className='input'>
 						<label>Description</label>
 						<input placeholder='Description' type='text'
@@ -115,29 +127,24 @@ class AddBookModal extends Component{
 						name='description'
 						value={this.state.description}
 						onChange={this.handleChange}/>
+					</Form.Field>
 
-						{/*<Form.Input  
-            				search
-            				label='Pickup Address'
-            				name='address'
-            				// options={this.state.MapAddress}
-            				required={true}
-            				placeholder='Address'
-            				value={this.state.address}
-							onChange={this.handleSelectChange}
-          				/>*/}
-					</Form.Field>
 					<Form.Field className='input'>
-					<input type='file'
-					/>
+						<input type='file'
+							label="Photo"
+							name='photo'
+							onChange={this.handleImageUpload}
+						/>
 					</Form.Field>
+
 					<Form.Field className='input'>
 						<label>Pick up Address</label>
 				          <Search
 				          	label= 'Pick up address'
 				          	name='value'
-				            loading={this.state.loading}
-				            // onSearchChange={this.handleSearchChange}
+				            loading={this.state.isLoading}
+				            
+				            onResultSelect={this.handleResultSelect}
 							onSearchChange={_.debounce(this.handleSearchChange, 500, {
               					leading: true,
             				})}
@@ -145,7 +152,7 @@ class AddBookModal extends Component{
 				            value={this.state.value}
 				          />
 					</Form.Field>
-					{/*<Image cloudName="demo" publicId="sample" width="300" crop="scale" />*/}
+
 					<Button type='Submit'>List Book</Button>
 				</Container>
 				</Form>

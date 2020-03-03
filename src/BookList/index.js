@@ -9,7 +9,7 @@ function BoookList(props){
 		return(
 				
 				<Item key={book.id}>
-					<Item.Image src='https://react.semantic-ui.com/images/wireframe/image.png'	/>
+					<Item.Image src={book.image}	/>
 					<Item.Content>
 						<Item.Header>
 							{book.title}
