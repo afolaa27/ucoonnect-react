@@ -88,7 +88,7 @@ class SearchBook extends Component{
 		
 		console.log('returns directions	>>>',driveTime )*/
 		console.log('returns mile>>>',distanceMiles )
-		
+
 	}
 	handleSubmit= async()=>{
 		await this.getSearchCordinates(this.state.search)
@@ -119,5 +119,4 @@ class SearchBook extends Component{
 		}
 
 }
-
 export default SearchBook
