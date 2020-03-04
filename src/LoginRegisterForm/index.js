@@ -46,8 +46,7 @@ class LoginRegisterForm extends Component{
 		})
 	}
 	formValidation=()=>{
-		console.log("this.state on formValidation >>> ", this.state);
-		console.log("regex for email >>> ",this.state.regexEmail.test(this.state.email));
+		
 		if (this.state.action === 'register'){
 
 			if(this.state.email==='' || !this.state.regexEmail.test(this.state.email)){
@@ -56,7 +55,7 @@ class LoginRegisterForm extends Component{
 					message:"Enter valid Email",
 					displayMessage : true
 				})
-			console.log("regex for password>>>>",this.state.regexPassword.test(this.state.password))
+			
 			}else if(this.state.password===''|| !this.state.regexPassword.test(this.state.password)){
 				
 				this.setState({
@@ -64,7 +63,7 @@ class LoginRegisterForm extends Component{
 					displayMessage : true
 				})
 			}else{
-				console.log(this.props.userExists);
+				
 				this.props.register(this.state)
 				if(this.props.userExists === 'yes'){
 					this.setState({
@@ -87,7 +86,7 @@ class LoginRegisterForm extends Component{
 	}
 
 	render(){
-		console.log("this is state >>>>" , this.state.regexPassword.test(this.state.password));
+		
 			return(
 			<div>
 				

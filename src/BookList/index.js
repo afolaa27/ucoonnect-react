@@ -3,7 +3,7 @@ import { Item, Button, Image, Container,Icon} from 'semantic-ui-react'
 import '../index.css'
 
 function BoookList(props){
-	console.log(props.books);
+	
 	const books = props.books.map((book)=>{
 
 		return(

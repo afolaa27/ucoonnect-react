@@ -33,3 +33,13 @@
 .listContainer{
 	padding-top: 50px;
 }
+.inputMap{
+	width: 40%;
+}
+.mapContainer{
+	position: absolute;
+	width: 790px;
+	height: 350px;
+	padding-top: 7px;
+	padding-left: 46px;
+}

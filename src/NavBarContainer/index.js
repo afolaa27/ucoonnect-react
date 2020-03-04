@@ -26,7 +26,7 @@ function Navbar(props){
 		      
 		        <Menu.Item
 		          name='Buy'
-		         
+		          onClick={props.openSearch}
 		          icon='shop'
 		        />
 		        <Menu.Item

@@ -3,6 +3,7 @@ import BookList from '../BookList'
 import NavBarContainer from '../NavBarContainer'
 import AddBookModal from '../AddBookModal'
 import EditBookForm from '../EditBookForm'
+import SearchBook from '../SearchBook'
 import '../index.css'
 
 import {Message} from 'semantic-ui-react'
@@ -17,6 +18,7 @@ class BookContainer extends Component{
 			addBookModalVisible : true,
 			state : true,
 			editVisible : false,
+			buyVisible : false,
 			bookToEdit :{
 				title : '',
 				price : '',
@@ -47,7 +49,7 @@ class BookContainer extends Component{
 			})
 		}
 		catch(err){
-			console.log(err)
+			console.error(err)
 		}
 	}
 
@@ -161,12 +163,11 @@ class BookContainer extends Component{
 		    }
 		  }
 		    catch(err){
-		      console.log(err)
+		      console.error(err)
 		  }
 	}
 	openEditForm =()=>{
 		this.setState({
-
 			editVisible: true,
 			state:false,
 		})
@@ -179,6 +180,7 @@ class BookContainer extends Component{
 		})
 	}
 	openAddBookModal=()=>{
+		this.closeSearch()
 		this.openEditForm()
 		this.setState({
 			addBookModalVisible: false,
@@ -188,25 +190,37 @@ class BookContainer extends Component{
 	}
 	
 	closeAddBookModal=()=>{
-
 		this.setState({
+
 			addBookModalVisible: true,
 			editVisible: false,
 			state : true	
 		})
 
 	}
+	openSearch=()=>{
+		this.setState({
+			buyVisible : true
+		})
+	}
+	closeSearch=()=>{
+		this.setState({
+			buyVisible : false
+		})
+	}
 
 	render(){
 
-		console.log('After setState the state >>>>', this.state.bookToEdit)
+		
+			
 		return(
 			<div> 
 
 			<NavBarContainer logout={this.props.logout} closeModal={this.closeAddBookModal} 
 			openModal={this.openAddBookModal} 
 			homeState={this.state.state}
-			closeModal={this.closeAddBookModal}/>
+			closeModal={this.closeAddBookModal}
+			openSearch={this.openSearch}/>
 			<div className="listContainer">
 			{
 				this.state.visible
@@ -220,19 +234,23 @@ class BookContainer extends Component{
 			}
 			</div>
 			{
-				this.state.editVisible
+				this.state.buyVisible
 				?
-						
-					<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
-					statePassed={this.state.bookToEdit}
-					updateBook={this.updateBook}
-					changeState={this.changeState}/>
+					<SearchBook userAddress={this.props.userAddress}/>
 				:
-					this.state.addBookModalVisible
+					this.state.editVisible
 					?
-					<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+							
+						<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
+						statePassed={this.state.bookToEdit}
+						updateBook={this.updateBook}
+						changeState={this.changeState}/>
 					:
-					<AddBookModal listBook={this.addBook}/>
+						this.state.addBookModalVisible
+						?
+						<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+						:
+						<AddBookModal listBook={this.addBook}/>
 
 			}
 			</div>

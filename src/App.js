@@ -8,9 +8,10 @@ class App extends Component {
   constructor(props){
     super(props)
     this.state={
-      loggedIn : true,
+      loggedIn : false,
       loggedInUserEmail : null,
-      userExist: ''
+      userExist: '',
+      userAddress : ''
     }
   }
 
@@ -31,6 +32,7 @@ class App extends Component {
         this.setState({
           loggedIn:true,
           loggedInUserEmail:registerJson.data.email,
+          userAddress : registerJson.data.school,
           userExist: 'no'
         })
       } if(registerResponse.status===401){
@@ -62,6 +64,8 @@ class App extends Component {
           this.setState({
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,
+            userAddress : loginJson.data.school
+
           })
         }
       }
@@ -89,14 +93,14 @@ class App extends Component {
       }
    }
   render(){
-    console.log(process.env)
+    
       return(
       <div className="App"> 
        {
         this.state.loggedIn
         ?
         <div>
-          <BookContainer logout={this.logout}/>
+          <BookContainer logout={this.logout} userAddress={this.state.userAddress}/>
         </div>
         :
           <div>

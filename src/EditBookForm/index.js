@@ -82,7 +82,7 @@ class EditBookForm extends Component{
   		const file = e.target.files[0]
   		const fd = new FormData()
   		fd.append('upload_preset', 'mufasa')
-  		console.log("the photo >>>",file)
+  		
   		fd.append('file', file)
   		this.setState({
   			formData : fd
