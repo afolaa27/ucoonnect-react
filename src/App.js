@@ -11,7 +11,8 @@ class App extends Component {
       loggedIn : false,
       loggedInUserEmail : null,
       userExist: '',
-      userAddress : ''
+      userAddress : '',
+      invalid: false
     }
   }
 
@@ -67,6 +68,10 @@ class App extends Component {
             userAddress : loginJson.data.school
 
           })
+        }else{
+          this.setState({
+            invalid : true
+          })
         }
       }
       catch(err){
@@ -105,7 +110,7 @@ class App extends Component {
         :
           <div>
 
-          <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login}/>
+          <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login} loggedIn={this.state.invalid}/>
 
           </div>
        }

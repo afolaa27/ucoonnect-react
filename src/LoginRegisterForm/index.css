@@ -9,7 +9,13 @@
   	background-color: white;
   	border-radius: 5px;
 }
-
+.searchButton{
+	box-shadow:0 6px 6px -7px black;
+	position: absolute;
+  	top: 20%;
+  	left: 49%;
+  	transform: translate(-50%, -50%);
+}
 .input{
 	padding-left: 45px;
 	width: 90%;
@@ -23,7 +29,6 @@
 	text-decoration: underline;
 }
 .message{
-	
 	width:400px;
 	position: absolute;
   	top:15%;
@@ -34,12 +39,17 @@
 	padding-top: 50px;
 }
 .inputMap{
-	width: 40%;
+	width: 30%;
 }
 .mapContainer{
 	position: absolute;
-	width: 790px;
-	height: 350px;
-	padding-top: 7px;
+	width: 70vw;
+	height: 40vh;
+	padding-top: 65px;
+	padding-left: 46px;
+	border-radius: 10px;
+}
+.filteredBooks{
+	width: 1013px;
 	padding-left: 46px;
 }

@@ -31,7 +31,7 @@ function Navbar(props){
 		        />
 		        <Menu.Item
 		          name='Favorites'
-		          
+		          onClick={props.openFav}
 		          icon='favorite'
 		        />
 		        <Menu.Item

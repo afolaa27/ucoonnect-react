@@ -62,7 +62,9 @@ class LoginRegisterForm extends Component{
 					message:"Password should contain at least one digit,one lower case, one upper case",
 					displayMessage : true
 				})
-			}else{
+			}
+
+			else{
 				
 				this.props.register(this.state)
 				if(this.props.userExists === 'yes'){
@@ -78,7 +80,17 @@ class LoginRegisterForm extends Component{
 			}
 		}
 		if(this.state.action === 'login'){
-			this.props.login(this.state)
+			if(this.props.loggedIn===true)
+			{
+				console.log('here')
+				this.setState({
+					message:'invalid credentials',
+					displayMessage: true
+				})
+			}else{
+
+				this.props.login(this.state)
+			}
 			
 		}
 

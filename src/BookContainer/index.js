@@ -4,6 +4,7 @@ import NavBarContainer from '../NavBarContainer'
 import AddBookModal from '../AddBookModal'
 import EditBookForm from '../EditBookForm'
 import SearchBook from '../SearchBook'
+import FavoriteBooks from '../FavoriteBooks'
 import '../index.css'
 
 import {Message} from 'semantic-ui-react'
@@ -19,6 +20,7 @@ class BookContainer extends Component{
 			state : true,
 			editVisible : false,
 			buyVisible : false,
+			favVisible : false,
 			bookToEdit :{
 				title : '',
 				price : '',
@@ -170,6 +172,8 @@ class BookContainer extends Component{
 		this.setState({
 			editVisible: true,
 			state:false,
+			buyVisible:false,
+			favVisible : false
 		})
 	}
 	closeEditForm =()=>{
@@ -177,6 +181,7 @@ class BookContainer extends Component{
 			addBookModalVisible: true,
 			editVisible: false,
 			state:false,
+			buyVisible: false
 		})
 	}
 	openAddBookModal=()=>{
@@ -185,27 +190,36 @@ class BookContainer extends Component{
 		this.setState({
 			addBookModalVisible: false,
 			state: false,
-			editVisible: false
+			editVisible: false,
+			buyVisible: false,
+			favVisible : false
 			
 		})
 	}
 	closeAddBookModal=()=>{
 		this.setState({
-
 			addBookModalVisible: true,
 			editVisible: false,
-			state : true	
+			state : true,
+			buyVisible: false	
 		})
 
 	}
 	openSearch=()=>{
 		this.setState({
-			buyVisible : true
+			buyVisible : true,
+			favVisible : false
 		})
 	}
 	closeSearch=()=>{
 		this.setState({
-			buyVisible : false
+			buyVisible : false,
+			favVisible : false
+		})
+	}
+	openFav=()=>{
+		this.setState({
+			favVisible : true
 		})
 	}
 
@@ -220,7 +234,8 @@ class BookContainer extends Component{
 			openModal={this.openAddBookModal} 
 			homeState={this.state.state}
 			closeModal={this.closeAddBookModal}
-			openSearch={this.openSearch}/>
+			openSearch={this.openSearch}
+			openFav={this.openFav}/>
 			<div className="listContainer">
 			{
 				this.state.visible
@@ -234,23 +249,27 @@ class BookContainer extends Component{
 			}
 			</div>
 			{
-				this.state.buyVisible
+				this.state.favVisible
 				?
-					<SearchBook userAddress={this.props.userAddress}/>
+					<FavoriteBooks/>
 				:
-					this.state.editVisible
+					this.state.buyVisible
 					?
-							
-						<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
-						statePassed={this.state.bookToEdit}
-						updateBook={this.updateBook}
-						changeState={this.changeState}/>
+						<SearchBook userAddress={this.props.userAddress}/>
 					:
-						this.state.addBookModalVisible
+						this.state.editVisible
 						?
-						<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+							
+							<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
+								statePassed={this.state.bookToEdit}
+								updateBook={this.updateBook}
+								changeState={this.changeState}/>
 						:
-						<AddBookModal listBook={this.addBook}/>
+							this.state.addBookModalVisible
+							?
+								<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+							:
+								<AddBookModal listBook={this.addBook}/>
 
 			}
 			</div>
