@@ -185,10 +185,10 @@ class BookContainer extends Component{
 		this.setState({
 			addBookModalVisible: false,
 			state: false,
+			editVisible: false
 			
 		})
 	}
-	
 	closeAddBookModal=()=>{
 		this.setState({
 
