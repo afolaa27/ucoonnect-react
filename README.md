@@ -61,7 +61,6 @@ class User(UserMixin,Model){
 	age = IntegerField()
 	email = CharField(unique=True)
 	password = CharField()
-	range = IntegerField()
 	school = CharField()
 }
 
@@ -73,8 +72,9 @@ class Book(Model){
 	description = TextField()
 	created_date = DateTimeField(default=datetime.datetime.now)
 	Sold = BooleanField()
-	favorite = BooleanField()
 	owner = ForeignKeyField(User, backref='Books')
+	image = CharField()
+	address= CharField()
 }
 class Favorite(Model){
 	

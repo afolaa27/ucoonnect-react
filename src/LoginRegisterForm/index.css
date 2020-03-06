@@ -81,8 +81,16 @@ h2{
 	font-weight: normal;
 }
 .searchT{
-	top:10%;
+	top:60%;
 	padding-left: 450px;	
+	display : flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.searchTm{
+	top:60%;
+	padding-left: 420px;	
 	display : flex;
 	flex-direction: column;
 	flex-wrap: wrap;
