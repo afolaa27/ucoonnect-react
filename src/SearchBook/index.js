@@ -216,10 +216,10 @@ class SearchBook extends Component{
 						<Button className='searchButton' type='Submit' icon='search' >search</Button>
 						</Form>
 				
+					</div>
+					<div className='searchT'>
 						<div ref={el => this.mapContainer = el} className='mapContainer'>
 						</div>
-
-
 					</div>
 					{
 						
