@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import {Button, Container, Form, Search, Grid, Input,Checkbox, Icon, Message} from 'semantic-ui-react'
+import {Button, Container, Form, Search, Grid, Input,Checkbox, Icon, Message, Divider} from 'semantic-ui-react'
 import mapBox from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
 import FilteredBookList from '../FilteredBookList'
 import BuyBookModal from '../BuyBookModal'
 
 import '../index.css'
+import 'mapbox-gl/dist/mapbox-gl.css'
 mapBox.accessToken=process.env.REACT_APP_API_TOKEN
 
 class SearchBook extends Component{
@@ -145,6 +145,7 @@ class SearchBook extends Component{
 	}
 	filterBooks = (books) => {
 		let filteredList=books.filter((book) => book.distance <10)
+		
 		this.setState({
 			filteredBooks : filteredList,
 			showFiltered : true
@@ -201,28 +202,31 @@ class SearchBook extends Component{
 				: 
 				null
 			}
-				<Container>
-					<div>
+				
+					<div className='searchT'>
 						<Form onSubmit={this.handleSubmit}>
-							<Input icon='search'
+							<Input 
 								name='search'
 								value={this.state.search}
 								onChange={this.handleChange}
 								required={true}
+								className='inputSearch'
 							/>
 					
+						<Button className='searchButton' type='Submit' icon='search' >search</Button>
+						</Form>
+				
 						<div ref={el => this.mapContainer = el} className='mapContainer'>
 						</div>
-						<Button className='searchButton' type='Submit' >search</Button>
-						</Form>
+
+
 					</div>
-					
 					{
 						
 							this.state.showFiltered
 							?
-								
 									<div className='filteredBooks'>
+									<h2>Books Around Me</h2>
 										<FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook}/>
 									</div>
 							:
@@ -231,7 +235,7 @@ class SearchBook extends Component{
 					
 
 					
-				</Container>
+				
 			</div>
 			)
 		}

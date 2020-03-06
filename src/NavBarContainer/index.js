@@ -1,5 +1,6 @@
 import React from 'react'
-import { Menu} from 'semantic-ui-react'
+import { Menu, Image, Segment} from 'semantic-ui-react'
+import '../index.css'
 
 
 
@@ -34,11 +35,15 @@ function Navbar(props){
 		          onClick={props.openFav}
 		          icon='favorite'
 		        />
+
 		        <Menu.Item
 		          name='Notifications'
 		          
 		          icon='bell'
 		        />
+		        <div className='log'>
+		        	<h1>Uconnect</h1>
+		        </div>
 		        <Menu.Menu position='right'>
 		          
 		          <Menu.Item

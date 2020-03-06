@@ -56,6 +56,7 @@ class AddBookModal extends Component{
 	handleSubmit = async(event)=>{
 
 		event.preventDefault()
+		console.log('data>>', this.state.formData)
 		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
 		.then(res=>{
 			console.log("the image url",res.data.url)
@@ -64,7 +65,6 @@ class AddBookModal extends Component{
 			})
 		})
 		.then(()=> this.submit())
-
 
 	}
 	submit=()=>{

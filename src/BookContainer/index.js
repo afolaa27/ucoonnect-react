@@ -69,7 +69,8 @@ class BookContainer extends Component{
 			const addBookJson = await addBookResponse.json()
 			if(addBookResponse.status === 201){
 				this.setState({
-					books:[...this.state.books, addBookJson.data]
+					books:[...this.state.books, addBookJson.data],
+					addBookModalVisible : false,
 				})
 			}
 
@@ -167,6 +168,9 @@ class BookContainer extends Component{
 		    catch(err){
 		      console.error(err)
 		  }
+	}
+	buyBook= async(id)=>{
+
 	}
 	openEditForm =()=>{
 		this.setState({

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Item, Button, Image, Container,Icon} from 'semantic-ui-react'
+import { Item, Button, Image, Container,Icon, Divider} from 'semantic-ui-react'
 import '../index.css'
 
 function BoookList(props){
@@ -37,9 +37,9 @@ function BoookList(props){
 	})
 	return(
 		 
-
 		<Container className="listContainer">
-		
+		<h2>My Books</h2>
+		<Divider/>
 		<Item.Group divided>
 			{books}
 		</Item.Group>

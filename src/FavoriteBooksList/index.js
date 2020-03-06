@@ -1,5 +1,5 @@
 import React from 'react'
-import { Item, Button, Image, Container,Icon} from 'semantic-ui-react'
+import { Item, Button, Image, Container,Icon, Divider} from 'semantic-ui-react'
 import '../index.css'
 
 function FavoriteBookList(props){
@@ -40,7 +40,8 @@ const books = props.books.map((book)=>{
 		 
 
 		<Container className="listContainer">
-		
+		<h2>My Favorite Books</h2>
+		<Divider/>
 		<Item.Group divided>
 			{books}
 		</Item.Group>

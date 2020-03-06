@@ -61,6 +61,8 @@ class EditBookForm extends Component{
   	handleSubmit = async(event)=>{
   		
   		event.preventDefault()
+  		console.log("here i am",this.state.formData)
+
   		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
   		.then(res=>{
   			console.log("the image url",res.data.url)
@@ -73,19 +75,19 @@ class EditBookForm extends Component{
 
   	}
   	submit=()=>{
-  		
-  		
  		this.props.updateBook(this.state)
  	}	
 
-  	handleImageUpload = (e)=>{
+  	handleImageUpload = async (e)=>{
+
   		const file = e.target.files[0]
   		const fd = new FormData()
   		fd.append('upload_preset', 'mufasa')
   		
-  		fd.append('file', file)
+  		await fd.append('file', file)
+  		console.log(fd)
   		this.setState({
-  			formData : fd
+  			formData : await fd
   		})
   	}
 

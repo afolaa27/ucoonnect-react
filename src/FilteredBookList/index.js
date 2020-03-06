@@ -26,7 +26,7 @@ function FilteredBookList(props){
 						</Item.Meta>
 						
 						<Item.Extra>
-							<Button floated="right" size='small' ><Icon name='money'></Icon>Buy</Button>
+							<Button floated="right" size='small'><Icon name='money'></Icon>Buy</Button>
 							<Button floated="left" size='small'onClick={()=>props.favorite(book.id)}><Icon name='favorite'></Icon>Add To Favorites</Button>
 						</Item.Extra>
 					</Item.Content>

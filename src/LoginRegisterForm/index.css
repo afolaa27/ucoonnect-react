@@ -11,14 +11,18 @@
 }
 .searchButton{
 	box-shadow:0 6px 6px -7px black;
-	position: absolute;
+	padding-left:100px;
+	/*position: absolute;
   	top: 20%;
   	left: 49%;
-  	transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);*/
 }
 .input{
-	padding-left: 45px;
+	padding-left: 40px;
 	width: 90%;
+}
+.inputSearch{
+	width:75%;
 }
 .formDiv{
 	padding-top: 7px;
@@ -45,11 +49,40 @@
 	position: absolute;
 	width: 70vw;
 	height: 40vh;
-	padding-top: 65px;
-	padding-left: 46px;
-	border-radius: 10px;
+	border-radius: 5px;
+	box-shadow:0 8px 16px -6px black;
 }
 .filteredBooks{
 	width: 1013px;
-	padding-left: 46px;
+	padding-left: 450px;
+	padding-top:35px;
+}
+.markers{
+	position: relative;
+}
+.log{
+	position:absolute;
+	left:50%;
+	width: 100px;
+	transform: translate(-50%, -50%);
+	height: 1px;
+
+}
+h1{
+	color:lightgrey;
+	font-family: Courier new;
+	font-weight: normal;
+}
+h2{
+	padding-left:4px;
+	color:black;
+	font-family: Courier new;
+	font-weight: normal;
+}
+.searchT{
+	padding-left: 450px;	
+	display : flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
