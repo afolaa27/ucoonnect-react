@@ -80,6 +80,7 @@ h2{
 	font-weight: normal;
 }
 .searchT{
+	top:10%;
 	padding-left: 450px;	
 	display : flex;
 	flex-direction: column;
