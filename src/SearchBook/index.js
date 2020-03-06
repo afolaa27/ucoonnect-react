@@ -217,7 +217,7 @@ class SearchBook extends Component{
 						</Form>
 				
 					</div>
-					<div className='searchT'>
+					<div className='searchTm'>
 						<div ref={el => this.mapContainer = el} className='mapContainer'>
 						</div>
 					</div>

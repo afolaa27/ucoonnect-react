@@ -90,6 +90,7 @@ h2{
 }
 .searchTm{
 	top:60%;
+	padding-top: 130px;
 	padding-left: 420px;	
 	display : flex;
 	flex-direction: column;
