@@ -56,7 +56,7 @@
 .filteredBooks{
 	width: 1013px;
 	padding-left: 450px;
-	padding-top:77px;
+	padding-top:100px;
 }
 .markers{
 	position: relative;
@@ -82,7 +82,7 @@ h2{
 }
 .searchT{
 	top:45%;
-	padding-left: 450px;	
+	padding-left: 300px;	
 	display : flex;
 	flex-direction: column;
 	flex-wrap: wrap;
@@ -91,7 +91,7 @@ h2{
 .searchTm{
 	top:37%;
 	padding-top: 130px;
-	padding-left: 420px;	
+	padding-left: 300px;	
 	display : flex;
 	flex-direction: column;
 	flex-wrap: wrap;
