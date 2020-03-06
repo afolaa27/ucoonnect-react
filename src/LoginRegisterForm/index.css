@@ -46,7 +46,7 @@
 	width: 30%;
 }
 .mapContainer{
-	top:45%;
+	top:40%;
 	position: absolute;
 	width: 70vw;
 	height: 40vh;
@@ -56,7 +56,7 @@
 .filteredBooks{
 	width: 1013px;
 	padding-left: 450px;
-	padding-top:35px;
+	padding-top:55px;
 }
 .markers{
 	position: relative;
