@@ -14,8 +14,9 @@ Uconnect is a book selling app that enables students **sell** books to people th
 - Python
 - Postgrees
 - Peewee
-- Semantic-ui-react
-- Google Maps Api
+- Semantic-ui
+- MapBox Maps Api
+- cloudinery
 
 
 ## WireFrame
@@ -89,8 +90,8 @@ class Favorite(Model){
 - sprint 3 : setup react and dependencies √
 - sprint 4 : login register form √
 - sprint 5 : login register validation √
-- sprint 6 : search & mapbox integration, image uplaod for books
-- sptiny 7 : show page and index page for box
-- sprint 7 : client side CRUD for books
-- sprint 8 : notification and favorites CRUD
-- sprint 9 : delete listing and user delete acount
+- sprint 6 : search & mapbox integration, image uplaod for books √
+- sptiny 7 : show page and index page for books
+- sprint 7 : client side CRUD for books √
+- sprint 8 : notification and favorites CRUD v
+- sprint 9 : delete listing and user delete acount√
