@@ -62,7 +62,7 @@ class App extends Component {
           }
         })
         const loginJson = await loginResponse.json()
-        if(loginResponse.status ===200){
+        if(loginResponse.status===200){
           this.setState({
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,

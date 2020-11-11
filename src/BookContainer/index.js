@@ -45,7 +45,8 @@ class BookContainer extends Component{
 			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/',{
 				credentials: 'include'
 			})			
-			const bookJson = await bookResponse.json()	
+			const bookJson = await bookResponse.json()
+			console.log(bookjson)	
 			this.setState({
 				books: bookJson.data
 			})
