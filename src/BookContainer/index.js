@@ -46,7 +46,7 @@ class BookContainer extends Component{
 				credentials: 'include'
 			})			
 			const bookJson = await bookResponse.json()
-			console.log(bookJson)	
+			console.log("this are the books >>" + bookJson.data)	
 			this.setState({
 				books: bookJson.data
 			})
