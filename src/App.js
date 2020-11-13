@@ -51,7 +51,7 @@ class App extends Component {
     }
   }
     login = async(loginInfo)=>{
-      const url = process.env.REACT_APP_API_URL + '/api/v1/users/login/'
+      const url = process.env.REACT_APP_API_URL + '/api/v1/users/login'
       try{
         const loginResponse = await fetch(url,{
           credentials: 'include',
