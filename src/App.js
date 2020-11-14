@@ -69,7 +69,7 @@ class App extends Component {
             userAddress : loginJson.data.school
 
           })
-          console.log("successfullly loggedIn")
+          console.log("successfullly loggedIn >>>> "+loggedInUserEmail)
         }else{
           this.setState({
             invalid : true
