@@ -41,10 +41,13 @@ class BookContainer extends Component{
 	}
 
 	getBooks = async()=>{	
+		console.log('we are in get books')
 		try{
-			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books',{
+			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/',{
+				method: 'GET',
 				credentials: 'include'
-			})			
+			})	
+
 			const bookJson = await bookResponse.json()
 			console.log("this are the books >>" + bookJson.data)	
 			this.setState({
@@ -52,6 +55,7 @@ class BookContainer extends Component{
 			})
 		}
 		catch(err){
+
 			console.error(err)
 		}
 	}
@@ -59,7 +63,7 @@ class BookContainer extends Component{
 	addBook = async(bookToAdd)=>{
 	
 		try{
-			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books',{
+			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/',{
 				method:'POST',
 				body:JSON.stringify(bookToAdd),
 				credentials:'include',
