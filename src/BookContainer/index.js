@@ -41,9 +41,9 @@ class BookContainer extends Component{
 	}
 
 	getBooks = async()=>{	
-		console.log('we are in get books!')
+		console.log('we are in get books..')
 		try{
-			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books',{
+			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/',{
 				method: 'GET',
 				credentials: 'include'
 			})	
