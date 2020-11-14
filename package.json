@@ -10,6 +10,7 @@
     "cloudinary-react": "^1.6.7",
     "lodash": "^4.17.20",
     "mapbox-gl": "^1.12.0",
+    "node": "^15.2.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-images-upload": "^1.2.8",
