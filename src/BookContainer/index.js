@@ -42,7 +42,7 @@ class BookContainer extends Component{
 
 	getBooks = async()=>{	
 		try{
-			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/',{
+			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books',{
 				credentials: 'include'
 			})			
 			const bookJson = await bookResponse.json()
@@ -59,7 +59,7 @@ class BookContainer extends Component{
 	addBook = async(bookToAdd)=>{
 	
 		try{
-			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books/',{
+			const addBookResponse = await fetch(process.env.REACT_APP_API_URL+'/api/v1/books',{
 				method:'POST',
 				body:JSON.stringify(bookToAdd),
 				credentials:'include',
