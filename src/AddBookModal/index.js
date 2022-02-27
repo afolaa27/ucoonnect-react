@@ -7,6 +7,8 @@ import '../index.css'
 
 const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
 
+
+//prepare to redeploy
 class AddBookModal extends Component{
 	state = initialState
 
