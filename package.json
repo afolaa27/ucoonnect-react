@@ -15,7 +15,7 @@
     "react-error-overlay": "^6.0.9",
     "react-images-upload": "^1.2.8",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.0",
+    "react-scripts": "5.0.1",
     "scripts": "^0.1.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2"
