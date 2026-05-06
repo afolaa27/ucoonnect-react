@@ -1,14 +1,15 @@
 :root {
-  --primary: #2563EB;
-  --primary-dark: #1D4ED8;
-  --primary-light: #EFF6FF;
-  --success: #059669;
-  --danger: #EF4444;
-  --bg: #F1F5F9;
-  --surface: #FFFFFF;
-  --text: #0F172A;
-  --text-muted: #64748B;
-  --border: #E2E8F0;
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #f0fdfa;
+  --nav-bg: #18181b;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
   --radius: 12px;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
   --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
@@ -33,8 +34,8 @@ code {
   border-radius: 0 !important;
   border: none !important;
   border-bottom: none !important;
-  background: var(--primary) !important;
-  box-shadow: 0 2px 16px rgba(37, 99, 235, 0.22) !important;
+  background: var(--nav-bg) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
   min-height: 64px;
   padding: 0 16px;
   margin: 0 !important;
@@ -79,7 +80,7 @@ code {
 .ui.primary.button:hover {
   background: var(--primary-dark) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35) !important;
 }
 
 .ui.red.button {

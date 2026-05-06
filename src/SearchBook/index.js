@@ -1,234 +1,174 @@
 import React, {Component} from 'react'
-import {Button, Container, Form, Search, Grid, Input,Checkbox, Icon, Message, Divider} from 'semantic-ui-react'
-import mapBox from 'mapbox-gl'
+import { Button, Form, Input, Message } from 'semantic-ui-react'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import FilteredBookList from '../FilteredBookList'
-import BuyBookModal from '../BuyBookModal'
+import '../LoginRegisterForm/index.css'
 
-import '../index.css'
-import 'mapbox-gl/dist/mapbox-gl.css'
-mapBox.accessToken=process.env.REACT_APP_API_TOKEN
+// Fix Leaflet's default marker icon path with webpack
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+})
 
-class SearchBook extends Component{
-	constructor(props){
-		super(props)
-		this.state={
-			books:[],
-			lng: '',
-			lat:'',
-			zoom: 10,
-			show: true,
-			filteredBooks:[],
-			search :'',
-			searchLat : '',
-			searchLng : '',
-			message : '',
-			visible:false,
-			map : '',
-			showFiltered : false,
-			showBuyModal : false
-		}
-	}
-	componentDidMount= async()=>{
-		await this.getAddress(this.props.userAddress)
-		await this.getBooks()
-		this.handlemap()
-
-	}
-	getAddress= async(address)=>{
-		const mapBox = await fetch(
-			'https://api.mapbox.com/geocoding/v5/mapbox.places/'+address+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
-		const mapBoxJson = await mapBox.json()
-		/*console.log('Mapbox result in search', mapBoxJson.features[0].center);*/
-		this.setState({
-			lng: mapBoxJson.features[0].center[0],
-			lat: mapBoxJson.features[0].center[1]
-		})
-	}
-	getSearchCordinates= async(address)=>{
-		const mapBox = await fetch(
-			'https://api.mapbox.com/geocoding/v5/mapbox.places/'+address+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
-		const mapBoxJson = await mapBox.json()
-		/*console.log('Mapbox result in search', mapBoxJson.features[0].center);*/
-		this.setState({
-			searchLng: mapBoxJson.features[0].center[0],
-			searchLat: mapBoxJson.features[0].center[1],
-			lng: mapBoxJson.features[0].center[0],
-			lat: mapBoxJson.features[0].center[1],
-		})
-	}
-	handlemap=()=>{
-		console.log('im hit');
-		this.state.map = new mapBox.Map({
-			container: this.mapContainer,
-			style: 'mapbox://styles/mapbox/streets-v11',
-			center: [this.state.lng, this.state.lat],
-			zoom: this.state.zoom
-		})
-	}
-
-	getBooks= async ()=>{
-		try{
-			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/all',{
-				credentials: 'include'
-			})			
-			const bookJson = await bookResponse.json()	
-			console.log('the json >>>', bookJson.data)
-			this.setState({
-				books: bookJson.data
-			})
-		}
-		catch(err){
-			console.error(err)
-		}
-	}
-	handleChange=(event)=>{
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
-
-	}
-	distance= async(book)=>{
-
-		const bookAddress= await fetch(
-			'https://api.mapbox.com/geocoding/v5/mapbox.places/'+book.address+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
-		const bookAddressJson = await bookAddress.json()
-		let bookLng = bookAddressJson.features[0].center[0]
-		let bookLat = bookAddressJson.features[0].center[1]
-
-
-
-		const getDistance = await fetch('https://api.mapbox.com/directions/v5/mapbox/driving/'+this.state.searchLng+','+this.state.searchLat+';'+bookLng +','+ bookLat+'?geometries=geojson&access_token='+process.env.REACT_APP_API_TOKEN)
-
-		const distanceJson = await getDistance.json()
-		console.log(">>>> distance between user and search address >>>>>,", distanceJson)
-		
-		let distanceMiles = Math.round((distanceJson.routes[0].distance/1609)*100)/100
-		/*let driveTime = Math.round(distanceJson.routes[0].duration/60)
-		
-		console.log('returns directions	>>>',driveTime )*/
-		book.distance = distanceMiles
-		book.lat = bookLat
-		book.lng = bookLng
-		console.log('returns mile>>>', book)
-		new mapBox.Marker().setLngLat([book.lng,book.lat]).addTo(this.state.map);
-	
-	}
-
-	handleSubmit= async()=>{
-		await this.getSearchCordinates(this.state.search)
-		let booksDist = []
-
-		if(this.state.books.length>0){
-		
-			this.state.books.forEach( (book) => {
-				this.distance(book)
-			})
-			console.log('bookk >>', this.state.books)
-
-			if(!this.state.books[0].distance){
-				console.log("book aint got no distance")
-				this.handleSubmit()
-
-			} else {
-				this.filterBooks(this.state.books)
-				this.getBooks()
-			}
-
-		}else{
-			this.handleDismiss()
-			this.setState({
-				visible:true,
-				message : "there are no books available at this time please try again later!"
-			})
-		}
-
-	}
-	filterBooks = (books) => {
-		let filteredList=books.filter((book) => book.distance <10)
-		
-		this.setState({
-			filteredBooks : filteredList,
-			showFiltered : true
-		})
-	}
-	handleDismiss = () => {
-		setTimeout(() => {
-			this.setState({ visible: false })
-		}, 3000)
-	}
-	favoriteBook = async(id)=>{
-		const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/favorites/'+id,{
-				method:'POST',
-				credentials:'include',
-				headers:{
-					'Content-Type':'application/json'
-				}
-			})	
-	}
-	/*buyBook = async(id)=>{
-		await this.showBuyModal(id)
-
-		const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/favorites/'+id,{
-				method:'POST',
-				credentials:'include',
-				headers:{
-					'Content-Type':'application/json'
-				}
-			})	
-	}
-	showBuyModal=(id)=>{
-		console.log('i got it bro')
-		this.setState({
-			showBuyModal :true
-		})
-	}*/
-
-	render(){
-
-			// console.log("!!!!!!", this.state.books)
-			// console.log("???????????", this.state.books[0].distance)
-			console.log("Y U NOT FILTERED???", this.state.filteredBooks)
-
-
-			return(
-			<div className='listContainer'>
-			{this.state.visible && (
-				<Message size='mini' color='red'
-					header='No books found nearby'
-					content={this.state.message}
-				/>
-			)}
-
-				<div className='search-bar'>
-					<Form onSubmit={this.handleSubmit} style={{display:'flex', gap:'12px', width:'100%', margin:0}}>
-						<Input
-							name='search'
-							value={this.state.search}
-							onChange={this.handleChange}
-							required={true}
-							placeholder='Enter an address or campus name...'
-							style={{flex:1}}
-						/>
-						<Button primary type='Submit' icon='search'>Search</Button>
-					</Form>
-				</div>
-
-				<div className='searchTm'>
-					<div ref={el => this.mapContainer = el} className='mapContainer' />
-				</div>
-
-				{this.state.showFiltered && (
-					<div className='filteredBooks'>
-						<FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook}/>
-					</div>
-				)}
-					
-
-					
-				
-			</div>
-			)
-		}
-
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 3958.8
+  const dLat = (lat2 - lat1) * (Math.PI / 180)
+  const dLon = (lon2 - lon1) * (Math.PI / 180)
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 100) / 100
 }
+
+async function geocode(address) {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+      { headers: { 'Accept-Language': 'en' } }
+    )
+    const data = await res.json()
+    if (data && data[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+  } catch (e) {}
+  return null
+}
+
+class SearchBook extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      books: [],
+      filteredBooks: [],
+      search: '',
+      message: '',
+      visible: false,
+      showFiltered: false,
+      loading: false,
+    }
+    this.map = null
+    this.markers = []
+  }
+
+  componentDidMount = async () => {
+    await this.getBooks()
+    this.initMap()
+  }
+
+  componentWillUnmount() {
+    if (this.map) { this.map.remove(); this.map = null }
+  }
+
+  initMap = async () => {
+    const center = await geocode(this.props.userAddress) || { lat: 37.09, lng: -95.71 }
+    this.map = L.map(this.mapContainer).setView([center.lat, center.lng], 12)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(this.map)
+  }
+
+  getBooks = async () => {
+    try {
+      const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/all', { credentials: 'include' })
+      const json = await res.json()
+      this.setState({ books: json.data })
+    } catch (err) { console.error(err) }
+  }
+
+  handleChange = (event) => this.setState({ [event.target.name]: event.target.value })
+
+  clearMarkers = () => {
+    this.markers.forEach(m => m.remove())
+    this.markers = []
+  }
+
+  handleSubmit = async () => {
+    if (!this.state.search.trim()) return
+    this.setState({ loading: true, showFiltered: false })
+
+    const searchCoords = await geocode(this.state.search)
+    if (!searchCoords) {
+      this.setState({ visible: true, message: 'Could not find that location.', loading: false })
+      setTimeout(() => this.setState({ visible: false }), 3000)
+      return
+    }
+
+    if (this.map) this.map.setView([searchCoords.lat, searchCoords.lng], 13)
+    this.clearMarkers()
+
+    const booksWithDistance = await Promise.all(
+      this.state.books.map(async (book) => {
+        const coords = await geocode(book.address)
+        if (!coords) return null
+        const distance = haversineDistance(searchCoords.lat, searchCoords.lng, coords.lat, coords.lng)
+        if (this.map) {
+          const marker = L.marker([coords.lat, coords.lng])
+            .bindPopup(`<strong>${book.title}</strong><br>$${book.price} &bull; ${distance} mi away`)
+            .addTo(this.map)
+          this.markers.push(marker)
+        }
+        return { ...book, distance }
+      })
+    )
+
+    const nearby = booksWithDistance.filter(b => b && b.distance < 10)
+    this.setState({
+      filteredBooks: nearby,
+      showFiltered: true,
+      loading: false,
+      visible: nearby.length === 0,
+      message: 'No books found within 10 miles of that location.',
+    })
+    if (nearby.length === 0) setTimeout(() => this.setState({ visible: false }), 3000)
+  }
+
+  favoriteBook = async (id) => {
+    await fetch(process.env.REACT_APP_API_URL + '/api/v1/favorites/' + id, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  render() {
+    return (
+      <div className='listContainer'>
+        {this.state.visible && (
+          <Message size='mini' negative
+            header='Location not found'
+            content={this.state.message}
+          />
+        )}
+
+        <div className='search-bar'>
+          <Form onSubmit={this.handleSubmit} style={{ display: 'flex', gap: '12px', width: '100%', margin: 0 }}>
+            <Input
+              name='search'
+              value={this.state.search}
+              onChange={this.handleChange}
+              required
+              placeholder='Search by campus name or address...'
+              style={{ flex: 1 }}
+            />
+            <Button primary type='submit' loading={this.state.loading} icon='search'>
+              Search
+            </Button>
+          </Form>
+        </div>
+
+        <div className='searchTm'>
+          <div ref={el => this.mapContainer = el} className='mapContainer' />
+        </div>
+
+        {this.state.showFiltered && (
+          <div className='filteredBooks'>
+            <FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook} />
+          </div>
+        )}
+      </div>
+    )
+  }
+}
+
 export default SearchBook

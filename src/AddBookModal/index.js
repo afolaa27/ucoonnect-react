@@ -13,23 +13,15 @@ class AddBookModal extends Component{
 	state = initialState
 
 	getAddress=async()=>{
-		
-		const mapBox = await fetch(
-			'https://api.mapbox.com/geocoding/v5/mapbox.places/'+this.state.value+'.json?country=us&limit=10&access_token='+process.env.REACT_APP_API_TOKEN)
-		const mapBoxJson = await mapBox.json()
-
-		const arrOfResults = []
-		for(let i = 0; i<mapBoxJson.features.length; i++){
-
-			arrOfResults.push({
-				title:mapBoxJson.features[i].place_name, 
-				key:i
-			})
-		}
-		this.setState({
-			results : arrOfResults
-		})
-
+		try {
+			const res = await fetch(
+				`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(this.state.value)}&format=json&limit=6`,
+				{ headers: { 'Accept-Language': 'en' } }
+			)
+			const data = await res.json()
+			const arrOfResults = data.map((item, i) => ({ title: item.display_name, key: i }))
+			this.setState({ results: arrOfResults })
+		} catch (e) {}
 	}
 
 	handleChange=(event)=>{
