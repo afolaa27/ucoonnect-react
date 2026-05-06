@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import LoginRegisterForm from './LoginRegisterForm'
 import BookContainer from './BookContainer'
-// import logo from '/uconnect.png'
-import {Image} from 'semantic-ui-react'
 import './App.css'
 
 class App extends Component {
@@ -110,14 +108,7 @@ class App extends Component {
           <BookContainer logout={this.logout} userAddress={this.state.userAddress}/>
         </div>
         :
-          <div>
-          <div className='logo'>
-            <Image src={process.env.PUBLIC_URL +'/uconnect.png'}/>
-          </div>
-          
           <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login} loggedIn={this.state.invalid}/>
-
-          </div>
        }
         
       </div>

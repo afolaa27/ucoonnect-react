@@ -1,53 +1,56 @@
 import React from 'react'
-import { Item, Button, Image, Container,Icon, Divider} from 'semantic-ui-react'
-import '../index.css'
+import { Button, Icon } from 'semantic-ui-react'
+import '../LoginRegisterForm/index.css'
 
-function FavoriteBookList(props){
-
-const books = props.books.map((book)=>{
-		console.log('>>>> one', book)
-			return(	
-					<Item key={book.id}>
-						<Item.Image src={book.Book_Id.image}	/>
-						<Item.Content>
-							<Item.Header>
-								{book.Book_Id.title}
-							</Item.Header>
-							<Item.Meta>
-								ISBN :{book.Book_Id.ISBN}
-							</Item.Meta>
-							<Item.Meta>
-								${book.Book_Id.price}
-							</Item.Meta>
-							<Item.Description>
-								{book.Book_Id.description}
-							</Item.Description>
-							<Item.Meta>
-								Pickup Address: {book.Book_Id.address}
-							</Item.Meta>
-							<Item.Extra>
-								<Button floated="right" size='small' onClick={()=>props.deleteFavorite(book.id)}><Icon name='trash'></Icon>Remove Favorite</Button>
-								<Button floated="left" size='small'onClick><Icon name='money'></Icon>Buy</Button>
-							</Item.Extra>
-						</Item.Content>
-					</Item>
-
-				)
-		})
-
-	
-	return(
-		 
-
-		<Container className="listContainer">
-		<h2>My Favorite Books</h2>
-		<Divider/>
-		<Item.Group divided>
-			{books}
-		</Item.Group>
-		
-		</Container>
+function FavoriteBookList(props) {
+	if (!props.books || props.books.length === 0) {
+		return (
+			<div className='listContainer'>
+				<div className='section-header'>
+					<h2 className='section-title'>My Favorites</h2>
+				</div>
+				<div className='section-divider' />
+				<div className='empty-state'>
+					<div className='empty-state-icon'>❤️</div>
+					<p>No favorites yet. Browse books and save the ones you like.</p>
+				</div>
+			</div>
 		)
+	}
+
+	return (
+		<div className='listContainer'>
+			<div className='section-header'>
+				<h2 className='section-title'>My Favorites</h2>
+			</div>
+			<div className='section-divider' />
+			<div className='book-grid'>
+				{props.books.map((book) => (
+					<div key={book.id} className='book-card'>
+						{book.Book_Id.image
+							? <img className='book-card-img' src={book.Book_Id.image} alt={book.Book_Id.title} />
+							: <div className='book-card-img-placeholder'>📖</div>
+						}
+						<div className='book-card-body'>
+							<p className='book-card-title'>{book.Book_Id.title}</p>
+							<p className='book-card-isbn'>ISBN: {book.Book_Id.ISBN}</p>
+							<p className='book-card-desc'>{book.Book_Id.description}</p>
+							<p className='book-card-price'>${book.Book_Id.price}</p>
+							<p className='book-card-address'>📍 {book.Book_Id.address}</p>
+						</div>
+						<div className='book-card-footer'>
+							<Button size='small' color='green'>
+								<Icon name='dollar' />Buy
+							</Button>
+							<Button size='small' color='red' onClick={() => props.deleteFavorite(book.id)}>
+								<Icon name='heart broken' />Remove
+							</Button>
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
+	)
 }
 
 export default FavoriteBookList

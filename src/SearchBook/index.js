@@ -191,47 +191,37 @@ class SearchBook extends Component{
 
 
 			return(
-			<div> 
-			{
-				this.state.visible
-				?
-				<Message size='mini' color='black'
-				header="Cant Find Books!"
-				content={this.state.message}
+			<div className='listContainer'>
+			{this.state.visible && (
+				<Message size='mini' color='red'
+					header='No books found nearby'
+					content={this.state.message}
 				/>
-				: 
-				null
-			}
-				
-					<div className='searchT'>
-						<Form onSubmit={this.handleSubmit}>
-							<Input 
-								name='search'
-								value={this.state.search}
-								onChange={this.handleChange}
-								required={true}
-								className='inputSearch'
-							/>
-					
-						<Button className='searchButton' type='Submit' icon='search' >search</Button>
-						</Form>
-				
+			)}
+
+				<div className='search-bar'>
+					<Form onSubmit={this.handleSubmit} style={{display:'flex', gap:'12px', width:'100%', margin:0}}>
+						<Input
+							name='search'
+							value={this.state.search}
+							onChange={this.handleChange}
+							required={true}
+							placeholder='Enter an address or campus name...'
+							style={{flex:1}}
+						/>
+						<Button primary type='Submit' icon='search'>Search</Button>
+					</Form>
+				</div>
+
+				<div className='searchTm'>
+					<div ref={el => this.mapContainer = el} className='mapContainer' />
+				</div>
+
+				{this.state.showFiltered && (
+					<div className='filteredBooks'>
+						<FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook}/>
 					</div>
-					<div className='searchTm'>
-						<div ref={el => this.mapContainer = el} className='mapContainer'>
-						</div>
-					</div>
-					{
-						
-							this.state.showFiltered
-							?
-									<div className='filteredBooks'>
-									<h2>Books Around Me</h2>
-										<FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook}/>
-									</div>
-							:
-							null
-					}
+				)}
 					
 
 					

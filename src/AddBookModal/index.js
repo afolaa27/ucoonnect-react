@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {Button, Container, Form, Search} from 'semantic-ui-react'
 import axios from 'axios'
 
-import '../index.css'
+import '../LoginRegisterForm/index.css'
 
 const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
 
@@ -87,73 +87,71 @@ class AddBookModal extends Component{
 	render(){
 		
 		return(
-			<div className='LoginRegisterForm'> 
-			<div className='formDiv'>
-			<Form onSubmit={this.handleSubmit}>
-			<Container>
-			<Form.Field className='input'>
-			<label>Title</label>
-			<input placeholder='Title'
-			name='title'
-			value={this.state.title}
-			onChange={this.handleChange}/>
-			</Form.Field>
+			<div className='form-page'>
+			<div className='form-card'>
+				<p className='form-card-title'>📚 List a Book for Sale</p>
+				<Form onSubmit={this.handleSubmit}>
+					<Form.Field>
+						<label>Title</label>
+						<input placeholder='e.g. Introduction to Algorithms'
+						name='title'
+						value={this.state.title}
+						onChange={this.handleChange}/>
+					</Form.Field>
 
-			<Form.Field className='input'>
-			<label>ISBN</label>
-			<input placeholder='ISBN' type='text'
-			maxLength={13}
-			required={true}
-			name='ISBN'
-			value={this.state.ISBN}
-			onChange={this.handleChange}/>
-			</Form.Field>
+					<Form.Field>
+						<label>ISBN</label>
+						<input placeholder='13-digit ISBN'
+						type='text'
+						maxLength={13}
+						required={true}
+						name='ISBN'
+						value={this.state.ISBN}
+						onChange={this.handleChange}/>
+					</Form.Field>
 
-			<Form.Field className='input'>
-			<label>Price</label>
-			<input placeholder='Price'
-			required={true}
-			name='price'
-			value={this.state.price}
-			onChange={this.handleChange}/>
-			</Form.Field>
+					<Form.Field>
+						<label>Price ($)</label>
+						<input placeholder='e.g. 45'
+						required={true}
+						name='price'
+						value={this.state.price}
+						onChange={this.handleChange}/>
+					</Form.Field>
 
-			<Form.Field className='input'>
-			<label>Description</label>
-			<input placeholder='Description' type='text'
-			required={true}
-			name='description'
-			value={this.state.description}
-			onChange={this.handleChange}/>
-			</Form.Field>
+					<Form.Field>
+						<label>Description</label>
+						<input placeholder='Condition, edition, any notes...'
+						type='text'
+						required={true}
+						name='description'
+						value={this.state.description}
+						onChange={this.handleChange}/>
+					</Form.Field>
 
-			<Form.Field className='input'>
-			<input type='file'
-			label="Photo"
-			name='photo'
-			onChange={this.handleImageUpload}
-			/>
-			</Form.Field>
+					<Form.Field>
+						<label>Cover Photo</label>
+						<input type='file'
+						name='photo'
+						onChange={this.handleImageUpload}
+						/>
+					</Form.Field>
 
-			<Form.Field className='input'>
-			<label>Pick up Address</label>
-			<Search
-			label= 'Pick up address'
-			name='value'
-			loading={this.state.isLoading}
+					<Form.Field>
+						<label>Pickup Address</label>
+						<Search
+						name='value'
+						loading={this.state.isLoading}
+						onResultSelect={this.handleResultSelect}
+						onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+						results={this.state.results}
+						value={this.state.value}
+						placeholder='Start typing an address...'
+						/>
+					</Form.Field>
 
-			onResultSelect={this.handleResultSelect}
-			onSearchChange={_.debounce(this.handleSearchChange, 500, {
-				leading: true,
-			})}
-			results={this.state.results}
-			value={this.state.value}
-			/>
-			</Form.Field>
-
-			<Button type='Submit'>List Book</Button>
-			</Container>
-			</Form>
+					<Button primary type='Submit' style={{width:'100%', marginTop:'8px'}}>List Book</Button>
+				</Form>
 			</div>
 			</div>
 			)
