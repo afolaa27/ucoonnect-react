@@ -5,7 +5,8 @@ import AddBookModal from '../AddBookModal'
 import EditBookForm from '../EditBookForm'
 import SearchBook from '../SearchBook'
 import FavoriteBooks from '../FavoriteBooks'
-import '../index.css'
+import AISearch from '../AISearch'
+import '../LoginRegisterForm/index.css'
 
 import {Message} from 'semantic-ui-react'
 
@@ -21,6 +22,10 @@ class BookContainer extends Component{
 			editVisible : false,
 			buyVisible : false,
 			favVisible : false,
+			discoverVisible : false,
+			notifications: [],
+			notifCount: 0,
+			notifPanelOpen: false,
 			bookToEdit :{
 				title : '',
 				price : '',
@@ -33,6 +38,12 @@ class BookContainer extends Component{
 	componentDidMount(){
 		this.getBooks()
 		this.handleDismiss()
+		this.pollNotifications()
+		this.notifInterval = setInterval(this.pollNotifications, 30000)
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.notifInterval)
 	}
 	handleDismiss = () => {
 		setTimeout(() => {
@@ -232,6 +243,43 @@ class BookContainer extends Component{
 		})
 	}
 
+	pollNotifications = async () => {
+		try {
+			const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/notifications/unread_count', { credentials: 'include' })
+			const json = await res.json()
+			this.setState({ notifCount: json.data.count })
+		} catch (e) {}
+	}
+
+	fetchNotifications = async () => {
+		try {
+			const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/notifications/', { credentials: 'include' })
+			const json = await res.json()
+			this.setState({ notifications: json.data || [] })
+		} catch (e) {}
+	}
+
+	toggleNotifPanel = async () => {
+		const opening = !this.state.notifPanelOpen
+		if (opening) await this.fetchNotifications()
+		this.setState({ notifPanelOpen: opening })
+	}
+
+	markRead = async (id) => {
+		await fetch(process.env.REACT_APP_API_URL + `/api/v1/notifications/${id}/read`, {
+			method: 'PATCH',
+			credentials: 'include'
+		})
+		this.setState({
+			notifications: this.state.notifications.map(n => n.id === id ? { ...n, read: true } : n),
+			notifCount: Math.max(0, this.state.notifCount - 1)
+		})
+	}
+
+	openDiscover = () => {
+		this.setState({ discoverVisible: true, buyVisible: false, favVisible: false, addBookModalVisible: true, editVisible: false })
+	}
+
 	render(){
 
 		
@@ -239,12 +287,20 @@ class BookContainer extends Component{
 		return(
 			<div> 
 
-			<NavBarContainer logout={this.props.logout} closeModal={this.closeAddBookModal} 
-			openModal={this.openAddBookModal} 
-			homeState={this.state.state}
-			closeModal={this.closeAddBookModal}
-			openSearch={this.openSearch}
-			openFav={this.openFav}/>
+			<NavBarContainer
+				logout={this.props.logout}
+				closeModal={this.closeAddBookModal}
+				openModal={this.openAddBookModal}
+				homeState={this.state.state}
+				openSearch={this.openSearch}
+				openFav={this.openFav}
+				openDiscover={this.openDiscover}
+				notifCount={this.state.notifCount}
+				notifications={this.state.notifications}
+				notifPanelOpen={this.state.notifPanelOpen}
+				toggleNotifPanel={this.toggleNotifPanel}
+				markRead={this.markRead}
+			/>
 			<div className="listContainer">
 			{
 				this.state.visible
@@ -258,27 +314,31 @@ class BookContainer extends Component{
 			}
 			</div>
 			{
-				this.state.favVisible
+				this.state.discoverVisible
 				?
-					<FavoriteBooks/>
+					<AISearch />
 				:
-					this.state.buyVisible
+					this.state.favVisible
 					?
-						<SearchBook userAddress={this.props.userAddress}/>
+						<FavoriteBooks/>
 					:
-						this.state.editVisible
+						this.state.buyVisible
 						?
-							
-							<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange} 
-								statePassed={this.state.bookToEdit}
-								updateBook={this.updateBook}
-								changeState={this.changeState}/>
+							<SearchBook userAddress={this.props.userAddress}/>
 						:
-							this.state.addBookModalVisible
+							this.state.editVisible
 							?
-								<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+
+								<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange}
+									statePassed={this.state.bookToEdit}
+									updateBook={this.updateBook}
+									changeState={this.changeState}/>
 							:
-								<AddBookModal listBook={this.addBook}/>
+								this.state.addBookModalVisible
+								?
+									<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+								:
+									<AddBookModal listBook={this.addBook}/>
 
 			}
 			</div>

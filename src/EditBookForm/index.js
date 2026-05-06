@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
-import {Button, Container, Form, Search} from 'semantic-ui-react'
+import {Button, Form, Search} from 'semantic-ui-react'
 import axios from 'axios'
 
-import '../index.css'
+import '../LoginRegisterForm/index.css'
 
 const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
 
@@ -18,76 +18,68 @@ class EditBookForm extends Component{
 			value : this.props.bookToEdit.address
 		})
 	}
-	getAddress=async()=>{
+
+	getAddress = async (query) => {
+		if (!query || query.length < 2) {
+			this.setState({ results: [], isLoading: false })
+			return
+		}
 		try {
 			const res = await fetch(
-				`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(this.state.value)}&format=json&limit=6`,
+				`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=us`,
 				{ headers: { 'Accept-Language': 'en' } }
 			)
 			const data = await res.json()
 			const arrOfResults = data.map((item, i) => ({ title: item.display_name, key: i }))
-			this.setState({ results: arrOfResults })
-		} catch (e) {}
+			this.setState({ results: arrOfResults, isLoading: false })
+		} catch (e) {
+			this.setState({ isLoading: false })
+		}
 	}
 
 	handleSearchChange = (e, { value }) => {
-    	this.setState({ isLoading: true, value })
-	    setTimeout(() => {
-	      if (this.state.value.length < 1){
-	      	return this.setState(initialState)
-	      } 
-	      
-    	  this.getAddress()
-	      this.setState({
-	        isLoading: false,
-	        ...this.props.bookToEdit
-	      })
-	 	}, 300)
-  	}
+		this.setState({ value, isLoading: value.length > 1 })
+		this.getAddress(value)
+	}
 
+	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
 
-  	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+	handleSubmit = async(event)=>{
+		event.preventDefault()
+		console.log("here i am", this.state.formData)
 
-  	handleSubmit = async(event)=>{
-  		
-  		event.preventDefault()
-  		console.log("here i am",this.state.formData)
+		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
+		.then(res=>{
+			console.log("the image url", res.data.url)
+			this.setState({
+				image : res.data.url
+			})
+		})
+		.then(()=> this.submit())
+	}
 
-  		axios.post('https://api.cloudinary.com/v1_1/mufasa/image/upload', this.state.formData)
-  		.then(res=>{
-  			console.log("the image url",res.data.url)
-  			this.setState({
-  				image : res.data.url
-  			})
-  		})
-  		.then(()=> this.submit())
+	submit=()=>{
+		this.props.updateBook(this.state)
+	}
 
-
-  	}
-  	submit=()=>{
- 		this.props.updateBook(this.state)
- 	}	
-
-  	handleImageUpload = async (e)=>{
-
-  		const file = e.target.files[0]
-  		const fd = new FormData()
-  		fd.append('upload_preset', 'mufasa')
-  		
-  		await fd.append('file', file)
-  		console.log(fd)
-  		this.setState({
-  			formData : await fd
-  		})
-  	}
+	handleImageUpload = async (e)=>{
+		const file = e.target.files[0]
+		const fd = new FormData()
+		fd.append('upload_preset', 'mufasa')
+		await fd.append('file', file)
+		console.log(fd)
+		this.setState({
+			formData : await fd
+		})
+	}
 
 	render(){
-			return(
-			<div className='LoginRegisterForm'> 
-				<div className='formDiv'>
+		return(
+			<div className='form-page'>
+			<div className='form-card'>
+				<p className='form-card-title'>✏️ Edit Book Listing</p>
 				<Form onSubmit={this.handleSubmit}>
-				<Container>
-					<Form.Field className='input'>
+					<Form.Field>
 						<label>Title</label>
 						<input placeholder='Title'
 						name='title'
@@ -95,7 +87,7 @@ class EditBookForm extends Component{
 						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
-					<Form.Field className='input'>
+					<Form.Field>
 						<label>ISBN</label>
 						<input placeholder='ISBN' type='text'
 						maxLength={13}
@@ -105,8 +97,8 @@ class EditBookForm extends Component{
 						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
-					<Form.Field className='input'>
-						<label>Price</label>
+					<Form.Field>
+						<label>Price ($)</label>
 						<input placeholder='Price'
 						required={true}
 						name='price'
@@ -114,7 +106,7 @@ class EditBookForm extends Component{
 						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
-					<Form.Field className='input'>
+					<Form.Field>
 						<label>Description</label>
 						<input placeholder='Description' type='text'
 						required={true}
@@ -123,37 +115,33 @@ class EditBookForm extends Component{
 						onChange={this.props.handleEditChange}/>
 					</Form.Field>
 
-					<Form.Field className='input'>
+					<Form.Field>
+						<label>Cover Photo</label>
 						<input type='file'
-							label="Photo"
 							name='photo'
 							onChange={this.handleImageUpload}
 						/>
 					</Form.Field>
 
-					<Form.Field className='input'>
-						<label>Pick up Address</label>
-				          <Search
-				          	label= 'Pick up address'
-				          	name='value'
-				            loading={this.state.isLoading}
-				            
-				            onResultSelect={this.handleResultSelect}
-							onSearchChange={_.debounce(this.handleSearchChange, 500, {
-              					leading: true,
-            				})}
-				            results={this.state.results}
-				            value={this.state.value}
-				          />
+					<Form.Field>
+						<label>Pickup Address</label>
+						<Search
+							name='value'
+							loading={this.state.isLoading}
+							onResultSelect={this.handleResultSelect}
+							onSearchChange={_.debounce(this.handleSearchChange, 400, { leading: false })}
+							results={this.state.results}
+							value={this.state.value}
+							placeholder='Start typing an address...'
+						/>
 					</Form.Field>
 
-					<Button type='Submit'>Update Book</Button>
-				</Container>
+					<Button primary type='Submit' style={{width:'100%', marginTop:'8px'}}>Update Book</Button>
 				</Form>
-				</div>
 			</div>
-			)
-		}
+			</div>
+		)
+	}
 }
 
 export default EditBookForm

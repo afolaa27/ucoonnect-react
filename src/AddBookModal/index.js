@@ -12,16 +12,22 @@ const initialState = {isLoading:false, results: [], value:'', formData : null, i
 class AddBookModal extends Component{
 	state = initialState
 
-	getAddress=async()=>{
+	getAddress = async (query) => {
+		if (!query || query.length < 2) {
+			this.setState({ results: [], isLoading: false })
+			return
+		}
 		try {
 			const res = await fetch(
-				`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(this.state.value)}&format=json&limit=6`,
+				`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&countrycodes=us`,
 				{ headers: { 'Accept-Language': 'en' } }
 			)
 			const data = await res.json()
 			const arrOfResults = data.map((item, i) => ({ title: item.display_name, key: i }))
-			this.setState({ results: arrOfResults })
-		} catch (e) {}
+			this.setState({ results: arrOfResults, isLoading: false })
+		} catch (e) {
+			this.setState({ isLoading: false })
+		}
 	}
 
 	handleChange=(event)=>{
@@ -32,17 +38,8 @@ class AddBookModal extends Component{
 	}
 
 	handleSearchChange = (e, { value }) => {
-		this.setState({ isLoading: true, value })
-		setTimeout(() => {
-			if (this.state.value.length < 1){
-				return this.setState(initialState)
-			} 
-
-			this.getAddress()
-			this.setState({
-				isLoading: false
-			})
-		}, 300)
+		this.setState({ value, isLoading: value.length > 1 })
+		this.getAddress(value)
 	}
 
 	handleResultSelect = (e, { result }) => this.setState({ value: result.title })
@@ -135,7 +132,7 @@ class AddBookModal extends Component{
 						name='value'
 						loading={this.state.isLoading}
 						onResultSelect={this.handleResultSelect}
-						onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
+						onSearchChange={_.debounce(this.handleSearchChange, 400, { leading: false })}
 						results={this.state.results}
 						value={this.state.value}
 						placeholder='Start typing an address...'
