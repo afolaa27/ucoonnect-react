@@ -17,6 +17,14 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (token) {
+      localStorage.setItem('auth_token', token)
+      const isNew = params.get('is_new') === '1'
+      this.setState({ isNewUser: isNew, justLoggedIn: true })
+      window.history.replaceState({}, '', window.location.pathname)
+    }
     this.checkSession()
   }
 
@@ -29,8 +37,8 @@ class App extends Component {
           loggedIn: true,
           loggedInUserEmail: json.data.email,
           userAddress: json.data.address || json.data.school || '',
-          isNewUser: json.data.is_new || false,
-          justLoggedIn: json.data.just_logged_in || false,
+          isNewUser: json.data.is_new || this.state.isNewUser || false,
+          justLoggedIn: json.data.just_logged_in || this.state.justLoggedIn || false,
         })
       }
     } catch (e) {}
@@ -50,6 +58,7 @@ class App extends Component {
       })
       const registerJson = await registerResponse.json()
       if(registerResponse.status===201){
+        if(registerJson.data.token) localStorage.setItem('auth_token', registerJson.data.token)
         this.setState({
           loggedIn:true,
           loggedInUserEmail:registerJson.data.email,
@@ -82,6 +91,7 @@ class App extends Component {
         })
         const loginJson = await loginResponse.json()
         if(loginResponse.status===200){
+          if(loginJson.data.token) localStorage.setItem('auth_token', loginJson.data.token)
           this.setState({
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,
@@ -104,6 +114,7 @@ class App extends Component {
           credentials : 'include'
         })
         if(logoutResponse.status === 200){
+          localStorage.removeItem('auth_token')
           this.setState({
             loggedIn : false,
             loggedInUserEmail: null,
