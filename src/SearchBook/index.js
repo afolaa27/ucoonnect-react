@@ -61,6 +61,7 @@ class SearchBook extends Component {
 
   initMap = async () => {
     const center = await geocode(this.props.userAddress) || { lat: 37.09, lng: -95.71 }
+    if (!this.mapContainer || this.map) return
     this.map = L.map(this.mapContainer).setView([center.lat, center.lng], 12)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
