@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { Item, Button, Image, Container,Icon} from 'semantic-ui-react'
 import FavoriteBooksList from '../FavoriteBooksList'
 import '../index.css'
 

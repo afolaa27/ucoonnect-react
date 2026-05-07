@@ -77,7 +77,8 @@ class EditBookForm extends Component{
 		return(
 			<div className='form-page'>
 			<div className='form-card'>
-				<p className='form-card-title'>✏️ Edit Book Listing</p>
+				{/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+			<p className='form-card-title'>✏️ Edit Book Listing</p>
 				<Form onSubmit={this.handleSubmit}>
 					<Form.Field>
 						<label>Title</label>

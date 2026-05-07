@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
-import {Button, Container, Form, Search} from 'semantic-ui-react'
+import {Button, Form, Search} from 'semantic-ui-react'
 import axios from 'axios'
 
 import '../LoginRegisterForm/index.css'
@@ -87,7 +87,8 @@ class AddBookModal extends Component{
 		return(
 			<div className='form-page'>
 			<div className='form-card'>
-				<p className='form-card-title'>📚 List a Book for Sale</p>
+				{/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+			<p className='form-card-title'>📚 List a Book for Sale</p>
 				<Form onSubmit={this.handleSubmit}>
 					<Form.Field>
 						<label>Title</label>

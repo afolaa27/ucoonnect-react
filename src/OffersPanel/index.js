@@ -93,6 +93,7 @@ class OffersPanel extends Component {
                     </div>
                     {offers.length === 0 ? (
                         <div className='notif-empty'>
+                            {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
                             <span style={{fontSize:'2rem'}}>💬</span>
                             <p>No offers yet</p>
                         </div>
@@ -119,6 +120,7 @@ class OffersPanel extends Component {
                 <div className='offer-chat-panel'>
                     {!activeOffer ? (
                         <div className='offer-chat-empty'>
+                            {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
                             <span style={{fontSize:'3rem'}}>💬</span>
                             <p>Select an offer to view the conversation</p>
                         </div>
