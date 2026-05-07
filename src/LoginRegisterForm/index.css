@@ -585,3 +585,231 @@ h2 {
   font-weight: 600;
   padding: 4px 0;
 }
+
+/* ── Chat Modal ── */
+.chat-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.chat-book-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.chat-book-price {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 2px 0 0;
+}
+
+.offer-form { padding: 8px 0; }
+
+.offer-form-label {
+  font-size: 0.9rem;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.chat-offer-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f0fdfa;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.offer-status-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #e5e7eb;
+  color: #374151;
+}
+.offer-status-badge.accepted { background: #d1fae5; color: #065f46; }
+.offer-status-badge.declined { background: #fee2e2; color: #991b1b; }
+.offer-status-badge.pending  { background: #fef9c3; color: #78350f; }
+
+.offer-amount { font-size: 0.85rem; color: #374151; }
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-bubble-wrap { display: flex; flex-direction: column; }
+.chat-bubble-wrap.mine { align-items: flex-end; }
+.chat-bubble-wrap.theirs { align-items: flex-start; }
+
+.chat-sender { font-size: 0.7rem; color: #9ca3af; margin: 0 0 2px 8px; }
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 9px 14px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.chat-bubble.mine {
+  background: #0d9488;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.theirs {
+  background: #f3f4f6;
+  color: #111827;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 9px 16px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.chat-input:focus { border-color: #0d9488; }
+
+.chat-thread { display: flex; flex-direction: column; height: 380px; }
+
+/* ── Offers Panel ── */
+.offers-panel-layout {
+  display: flex;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.offers-list {
+  width: 300px;
+  border-right: 1px solid #e5e7eb;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background: #fafafa;
+}
+
+.offers-list-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.offers-list-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.offers-count {
+  background: #0d9488;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.offer-list-item {
+  padding: 14px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.12s;
+}
+
+.offer-list-item:hover { background: #f0fdfa; }
+.offer-list-item.active { background: #f0fdfa; border-left: 3px solid #0d9488; }
+
+.offer-list-book {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.offer-list-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.offer-list-user { font-size: 0.75rem; color: #6b7280; }
+
+.offer-status-pill {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: capitalize;
+  background: #e5e7eb;
+  color: #374151;
+}
+.offer-status-pill.accepted { background: #d1fae5; color: #065f46; }
+.offer-status-pill.declined { background: #fee2e2; color: #991b1b; }
+.offer-status-pill.pending  { background: #fef9c3; color: #78350f; }
+
+.offer-list-amount { font-size: 0.85rem; font-weight: 700; color: #0d9488; }
+
+.offer-chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.offer-chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  gap: 12px;
+}
+
+.offer-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.offer-actions { display: flex; gap: 8px; }

@@ -6,6 +6,8 @@ import EditBookForm from '../EditBookForm'
 import SearchBook from '../SearchBook'
 import FavoriteBooks from '../FavoriteBooks'
 import AISearch from '../AISearch'
+import ChatModal from '../ChatModal'
+import OffersPanel from '../OffersPanel'
 import '../LoginRegisterForm/index.css'
 
 import {Message} from 'semantic-ui-react'
@@ -23,6 +25,9 @@ class BookContainer extends Component{
 			buyVisible : false,
 			favVisible : false,
 			discoverVisible : false,
+			offersVisible : false,
+			chatBook : null,
+			currentUser : null,
 			notifications: [],
 			notifCount: 0,
 			notifPanelOpen: false,
@@ -40,6 +45,7 @@ class BookContainer extends Component{
 		this.handleDismiss()
 		this.pollNotifications()
 		this.notifInterval = setInterval(this.pollNotifications, 30000)
+		this.getCurrentUser()
 	}
 
 	componentWillUnmount() {
@@ -277,15 +283,29 @@ class BookContainer extends Component{
 	}
 
 	openDiscover = () => {
-		this.setState({ discoverVisible: true, buyVisible: false, favVisible: false, addBookModalVisible: true, editVisible: false })
+		this.setState({ discoverVisible: true, buyVisible: false, favVisible: false, offersVisible: false, addBookModalVisible: true, editVisible: false })
 	}
+
+	getCurrentUser = async () => {
+		try {
+			const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/loggedin', { credentials: 'include' })
+			const json = await res.json()
+			if (json.data) this.setState({ currentUser: json.data })
+		} catch (e) {}
+	}
+
+	openChat = (book) => this.setState({ chatBook: book })
+	closeChat = () => this.setState({ chatBook: null })
+
+	openOffers = () => this.setState({ offersVisible: true, buyVisible: false, favVisible: false, discoverVisible: false, addBookModalVisible: true, editVisible: false })
 
 	render(){
 
 		
 			
 		return(
-			<div> 
+			<React.Fragment>
+			<div>
 
 			<NavBarContainer
 				logout={this.props.logout}
@@ -295,6 +315,7 @@ class BookContainer extends Component{
 				openSearch={this.openSearch}
 				openFav={this.openFav}
 				openDiscover={this.openDiscover}
+				openOffers={this.openOffers}
 				notifCount={this.state.notifCount}
 				notifications={this.state.notifications}
 				notifPanelOpen={this.state.notifPanelOpen}
@@ -309,7 +330,7 @@ class BookContainer extends Component{
 				header='Welcome back!'
 				content=''
 				/>
-				: 
+				:
 				null
 			}
 			</div>
@@ -318,31 +339,43 @@ class BookContainer extends Component{
 				?
 					<AISearch />
 				:
-					this.state.favVisible
+					this.state.offersVisible
 					?
-						<FavoriteBooks/>
+						<OffersPanel currentUserId={this.state.currentUser && this.state.currentUser.id} onOfferAccepted={this.openCheckout} />
 					:
-						this.state.buyVisible
+						this.state.favVisible
 						?
-							<SearchBook userAddress={this.props.userAddress}/>
+							<FavoriteBooks/>
 						:
-							this.state.editVisible
+							this.state.buyVisible
 							?
-
-								<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange}
-									statePassed={this.state.bookToEdit}
-									updateBook={this.updateBook}
-									changeState={this.changeState}/>
+								<SearchBook userAddress={this.props.userAddress} openChat={this.openChat}/>
 							:
-								this.state.addBookModalVisible
+								this.state.editVisible
 								?
-									<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+
+									<EditBookForm bookToEdit={this.state.bookToEdit} handleEditChange={this.handleEditChange}
+										statePassed={this.state.bookToEdit}
+										updateBook={this.updateBook}
+										changeState={this.changeState}/>
 								:
-									<AddBookModal listBook={this.addBook}/>
+									this.state.addBookModalVisible
+									?
+										<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+									:
+										<AddBookModal listBook={this.addBook}/>
 
 			}
 			</div>
-			)
+			{this.state.chatBook && (
+				<ChatModal
+					book={this.state.chatBook}
+					currentUser={this.state.currentUser}
+					onClose={this.closeChat}
+				/>
+			)}
+			</React.Fragment>
+		)
 	}
 }
 

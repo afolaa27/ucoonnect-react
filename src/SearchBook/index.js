@@ -163,7 +163,7 @@ class SearchBook extends Component {
 
         {this.state.showFiltered && (
           <div className='filteredBooks'>
-            <FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook} />
+            <FilteredBookList books={this.state.filteredBooks} favorite={this.favoriteBook} openChat={this.props.openChat} />
           </div>
         )}
       </div>

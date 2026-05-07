@@ -14,6 +14,7 @@ function Navbar(props) {
 				<Menu.Item name='Browse' onClick={props.openSearch} icon='search' />
 				<Menu.Item name='Discover' onClick={props.openDiscover} icon='lightbulb' />
 				<Menu.Item name='Favorites' onClick={props.openFav} icon='heart' />
+				<Menu.Item name='Offers' onClick={props.openOffers} icon='handshake' />
 
 				<Menu.Item
 					onClick={props.toggleNotifPanel}

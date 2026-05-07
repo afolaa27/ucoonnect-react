@@ -38,8 +38,8 @@ function FilteredBookList(props) {
 							<Button size='small' color='blue' onClick={() => props.favorite(book.id)}>
 								<Icon name='heart' />Save
 							</Button>
-							<Button size='small' color='green'>
-								<Icon name='dollar' />Buy
+							<Button size='small' color='green' onClick={() => props.openChat && props.openChat(book)}>
+								<Icon name='comment' />Make Offer
 							</Button>
 						</div>
 					</div>
