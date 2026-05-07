@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import io from 'socket.io-client'
 import BookList from '../BookList'
 import NavBarContainer from '../NavBarContainer'
 import AddBookModal from '../AddBookModal'
@@ -8,9 +9,33 @@ import FavoriteBooks from '../FavoriteBooks'
 import AISearch from '../AISearch'
 import ChatModal from '../ChatModal'
 import OffersPanel from '../OffersPanel'
+import ProfileModal from '../ProfileModal'
 import '../LoginRegisterForm/index.css'
-
 import {Message} from 'semantic-ui-react'
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+	const R = 3958.8
+	const dLat = (lat2 - lat1) * (Math.PI / 180)
+	const dLon = (lon2 - lon1) * (Math.PI / 180)
+	const a = Math.sin(dLat / 2) ** 2 +
+		Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+	return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 10) / 10
+}
+
+async function geocode(address) {
+	const controller = new AbortController()
+	const timer = setTimeout(() => controller.abort(), 5000)
+	try {
+		const res = await fetch(
+			`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
+			{ headers: { 'Accept-Language': 'en' }, signal: controller.signal }
+		)
+		const data = await res.json()
+		if (data && data[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+	} catch (e) {}
+	finally { clearTimeout(timer) }
+	return null
+}
 
 
 class BookContainer extends Component{
@@ -18,7 +43,8 @@ class BookContainer extends Component{
 		super(props)
 		this.state={
 			books : [],
-			visible : true,
+			booksReady: false,
+			visible : props.justLoggedIn || false,
 			addBookModalVisible : true,
 			state : true,
 			editVisible : false,
@@ -28,6 +54,7 @@ class BookContainer extends Component{
 			offersVisible : false,
 			chatBook : null,
 			currentUser : null,
+			profileVisible: false,
 			notifications: [],
 			notifCount: 0,
 			notifPanelOpen: false,
@@ -50,6 +77,8 @@ class BookContainer extends Component{
 
 	componentWillUnmount() {
 		clearInterval(this.notifInterval)
+		clearTimeout(this.notifTimer)
+		if (this.userSocket) this.userSocket.disconnect()
 	}
 	handleDismiss = () => {
 		setTimeout(() => {
@@ -57,24 +86,38 @@ class BookContainer extends Component{
 		}, 2000)
 	}
 
-	getBooks = async()=>{	
-		console.log('we are in get books..')
-		try{
-			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/',{
+	getBooks = async () => {
+		try {
+			const bookResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/books/', {
 				method: 'GET',
 				credentials: 'include'
-			})	
-
-			const bookJson = await bookResponse.json()
-			console.log("this are the books >>" + bookJson.data)
-			this.setState({
-				books: bookJson.data
 			})
-		}
-		catch(err){
-
+			const bookJson = await bookResponse.json()
+			const books = bookJson.data || []
+			this.setState({ books, booksReady: true })
+			this._distGen = (this._distGen || 0) + 1
+			this.computeDistances(books, this._distGen)
+		} catch (err) {
 			console.error(err)
+			this.setState({ booksReady: true })
 		}
+	}
+
+	computeDistances = async (books, gen) => {
+		if (!this.props.userAddress || !books.length) return
+		const userCoords = await geocode(this.props.userAddress)
+		if (!userCoords || this._distGen !== gen) return
+		const distances = {}
+		for (const book of books) {
+			if (this._distGen !== gen) return
+			if (!book.address) continue
+			const coords = await geocode(book.address)
+			if (coords) distances[book.id] = haversineDistance(userCoords.lat, userCoords.lng, coords.lat, coords.lng)
+		}
+		if (this._distGen !== gen) return
+		this.setState(prev => ({
+			books: prev.books.map(b => b.id in distances ? { ...b, distance: distances[b.id] } : b)
+		}))
 	}
 
 	addBook = async(bookToAdd)=>{
@@ -197,55 +240,86 @@ class BookContainer extends Component{
 	openEditForm =()=>{
 		this.setState({
 			editVisible: true,
-			state:false,
-			buyVisible:false,
-			favVisible : false
+			state: false,
+			buyVisible: false,
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 	closeEditForm =()=>{
 		this.setState({
 			addBookModalVisible: true,
 			editVisible: false,
-			state:false,
-			buyVisible: false
+			state: false,
+			buyVisible: false,
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 	openAddBookModal=()=>{
-		this.closeSearch()
-		this.openEditForm()
 		this.setState({
 			addBookModalVisible: false,
-			state: false,
 			editVisible: false,
+			state: false,
 			buyVisible: false,
-			favVisible : false
-			
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 	closeAddBookModal=()=>{
 		this.setState({
 			addBookModalVisible: true,
 			editVisible: false,
-			state : true,
-			buyVisible: false	
+			state: true,
+			buyVisible: false,
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
-
 	}
 	openSearch=()=>{
 		this.setState({
-			buyVisible : true,
-			favVisible : false
+			buyVisible: true,
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			addBookModalVisible: true,
+			editVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 	closeSearch=()=>{
 		this.setState({
-			buyVisible : false,
-			favVisible : false
+			buyVisible: false,
+			favVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 	openFav=()=>{
 		this.setState({
-			favVisible : true
+			favVisible: true,
+			buyVisible: false,
+			discoverVisible: false,
+			offersVisible: false,
+			addBookModalVisible: true,
+			editVisible: false,
+			chatBook: null,
+			profileVisible: false,
 		})
 	}
 
@@ -267,8 +341,22 @@ class BookContainer extends Component{
 
 	toggleNotifPanel = async () => {
 		const opening = !this.state.notifPanelOpen
-		if (opening) await this.fetchNotifications()
+		if (opening) {
+			await this.fetchNotifications()
+			clearTimeout(this.notifTimer)
+			this.notifTimer = setTimeout(() => this.setState({ notifPanelOpen: false }), 15000)
+		} else {
+			clearTimeout(this.notifTimer)
+		}
 		this.setState({ notifPanelOpen: opening })
+	}
+
+	favoriteBook = async (id) => {
+		await fetch(process.env.REACT_APP_API_URL + '/api/v1/favorites/' + id, {
+			method: 'POST',
+			credentials: 'include',
+			headers: { 'Content-Type': 'application/json' },
+		})
 	}
 
 	markRead = async (id) => {
@@ -283,21 +371,46 @@ class BookContainer extends Component{
 	}
 
 	openDiscover = () => {
-		this.setState({ discoverVisible: true, buyVisible: false, favVisible: false, offersVisible: false, addBookModalVisible: true, editVisible: false })
+		this.setState({ discoverVisible: true, buyVisible: false, favVisible: false, offersVisible: false, addBookModalVisible: true, editVisible: false, chatBook: null, profileVisible: false })
 	}
 
 	getCurrentUser = async () => {
 		try {
 			const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/loggedin', { credentials: 'include' })
 			const json = await res.json()
-			if (json.data) this.setState({ currentUser: json.data })
+			if (json.data) {
+				this.setState({ currentUser: json.data })
+				this.connectUserSocket(json.data.id)
+			}
 		} catch (e) {}
+	}
+
+	connectUserSocket = (userId) => {
+		this.userSocket = io(process.env.REACT_APP_API_URL, { withCredentials: true })
+		this.userSocket.on('connect', () => {
+			this.userSocket.emit('join_user_room', { user_id: userId })
+		})
+		this.userSocket.on('new_notification', (data) => {
+			this.setState(prev => ({
+				notifCount: prev.notifCount + 1,
+				notifications: [{ ...data, id: Date.now() }, ...prev.notifications],
+			}))
+		})
 	}
 
 	openChat = (book) => this.setState({ chatBook: book })
 	closeChat = () => this.setState({ chatBook: null })
 
-	openOffers = () => this.setState({ offersVisible: true, buyVisible: false, favVisible: false, discoverVisible: false, addBookModalVisible: true, editVisible: false })
+	openProfile = () => this.setState({ profileVisible: true })
+	closeProfile = () => this.setState({ profileVisible: false })
+	handleProfileUpdated = (updatedUser) => {
+		this.setState({ currentUser: updatedUser })
+		if (this.props.onAddressUpdated && updatedUser.address) {
+			this.props.onAddressUpdated(updatedUser.address)
+		}
+	}
+
+	openOffers = () => this.setState({ offersVisible: true, buyVisible: false, favVisible: false, discoverVisible: false, addBookModalVisible: true, editVisible: false, chatBook: null, profileVisible: false })
 
 	render(){
 
@@ -321,23 +434,23 @@ class BookContainer extends Component{
 				notifPanelOpen={this.state.notifPanelOpen}
 				toggleNotifPanel={this.toggleNotifPanel}
 				markRead={this.markRead}
+				openProfile={this.openProfile}
+				currentUser={this.state.currentUser}
 			/>
 			<div className="listContainer">
-			{
-				this.state.visible
-				?
+			{this.state.visible && this.state.currentUser && (
 				<Message size='mini' color='black'
-				header='Welcome back!'
-				content=''
+					header={this.props.isNewUser
+						? `Welcome to UConnect, ${this.state.currentUser.username}! 🎉`
+						: `Welcome back, ${this.state.currentUser.username}!`}
+					content={this.props.isNewUser ? 'Your account is ready. Browse books near you to get started.' : ''}
 				/>
-				:
-				null
-			}
+			)}
 			</div>
 			{
 				this.state.discoverVisible
 				?
-					<AISearch />
+					<AISearch favorite={this.favoriteBook} openChat={this.openChat} currentUser={this.state.currentUser} />
 				:
 					this.state.offersVisible
 					?
@@ -361,7 +474,7 @@ class BookContainer extends Component{
 								:
 									this.state.addBookModalVisible
 									?
-										<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook}/>
+										<BookList books={this.state.books} delete={this.deleteBook} edit={this.editBook} openOffers={this.openOffers}/>
 									:
 										<AddBookModal listBook={this.addBook}/>
 
@@ -372,6 +485,14 @@ class BookContainer extends Component{
 					book={this.state.chatBook}
 					currentUser={this.state.currentUser}
 					onClose={this.closeChat}
+				/>
+			)}
+			{this.state.profileVisible && (
+				<ProfileModal
+					currentUser={this.state.currentUser}
+					onClose={this.closeProfile}
+					onUpdated={this.handleProfileUpdated}
+					onDeleted={this.props.logout}
 				/>
 			)}
 			</React.Fragment>

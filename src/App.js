@@ -9,10 +9,31 @@ class App extends Component {
     this.state={
       loggedIn : false,
       loggedInUserEmail : null,
-      userExist: '',
       userAddress : '',
-      invalid: false
+      invalid: false,
+      isNewUser: false,
+      justLoggedIn: false,
     }
+  }
+
+  componentDidMount() {
+    this.checkSession()
+  }
+
+  checkSession = async () => {
+    try {
+      const res = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/loggedin', { credentials: 'include' })
+      const json = await res.json()
+      if (json.data && json.data.id) {
+        this.setState({
+          loggedIn: true,
+          loggedInUserEmail: json.data.email,
+          userAddress: json.data.address || json.data.school || '',
+          isNewUser: json.data.is_new || false,
+          justLoggedIn: json.data.just_logged_in || false,
+        })
+      }
+    } catch (e) {}
   }
 
   register = async(registerInfo)=>{
@@ -32,7 +53,7 @@ class App extends Component {
         this.setState({
           loggedIn:true,
           loggedInUserEmail:registerJson.data.email,
-          userAddress : registerJson.data.school,
+          userAddress : registerJson.data.address || registerJson.data.school || '',
           userExist: 'no'
         })
       } if(registerResponse.status===401){
@@ -64,20 +85,16 @@ class App extends Component {
           this.setState({
             loggedIn:true,
             loggedInUserEmail: loginJson.data.email,
-            userAddress : loginJson.data.school
-
-          })
-          console.log("successfullly loggedIn >>>> ");
-        }else{
-          this.setState({
-            invalid : true
+            userAddress : loginJson.data.address || loginJson.data.school || '',
+            justLoggedIn: true,
           })
         }
+        return loginResponse.status
       }
       catch(err){
         console.error(err)
+        return null
       }
-
     }
    logout = async ()=>{
     
@@ -105,10 +122,10 @@ class App extends Component {
         this.state.loggedIn
         ?
         <div>
-          <BookContainer logout={this.logout} userAddress={this.state.userAddress}/>
+          <BookContainer logout={this.logout} userAddress={this.state.userAddress} isNewUser={this.state.isNewUser} justLoggedIn={this.state.justLoggedIn} onAddressUpdated={(addr) => this.setState({ userAddress: addr })} />
         </div>
         :
-          <LoginRegisterForm register={this.register} userExists={this.state.userExist} login={this.login} loggedIn={this.state.invalid}/>
+          <LoginRegisterForm login={this.login} />
        }
         
       </div>

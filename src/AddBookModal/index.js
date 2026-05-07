@@ -5,7 +5,16 @@ import axios from 'axios'
 
 import '../LoginRegisterForm/index.css'
 
-const initialState = {isLoading:false, results: [], value:'', formData : null, image:''}
+const SUBJECTS = [
+	'Mathematics', 'Computer Science', 'Engineering', 'Physics', 'Chemistry',
+	'Biology', 'Business', 'Economics', 'Psychology', 'Sociology',
+	'History', 'Literature', 'Philosophy', 'Art & Design', 'Music',
+	'Medicine & Health', 'Law', 'Political Science', 'Education', 'Other'
+]
+
+const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'Poor']
+
+const initialState = {isLoading:false, results: [], value:'', formData: null, image:'', subject:'', condition:''}
 
 
 //prepare to redeploy
@@ -13,7 +22,7 @@ class AddBookModal extends Component{
 	state = initialState
 
 	getAddress = async (query) => {
-		if (!query || query.length < 2) {
+		if (!query || query.length < 4) {
 			this.setState({ results: [], isLoading: false })
 			return
 		}
@@ -38,7 +47,7 @@ class AddBookModal extends Component{
 	}
 
 	handleSearchChange = (e, { value }) => {
-		this.setState({ value, isLoading: value.length > 1 })
+		this.setState({ value, isLoading: value.length >= 4 })
 		this.getAddress(value)
 	}
 
@@ -119,6 +128,32 @@ class AddBookModal extends Component{
 					</Form.Field>
 
 					<Form.Field>
+						<label>Condition</label>
+						<select
+							name='condition'
+							value={this.state.condition}
+							onChange={this.handleChange}
+							style={{width:'100%', padding:'9px 12px', borderRadius:'4px', border:'1px solid rgba(34,36,38,.15)', fontSize:'1em'}}
+						>
+							<option value=''>Select condition...</option>
+							{CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
+						</select>
+					</Form.Field>
+
+					<Form.Field>
+						<label>Subject Category</label>
+						<select
+							name='subject'
+							value={this.state.subject}
+							onChange={this.handleChange}
+							style={{width:'100%', padding:'9px 12px', borderRadius:'4px', border:'1px solid rgba(34,36,38,.15)', fontSize:'1em'}}
+						>
+							<option value=''>Select a subject...</option>
+							{SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+						</select>
+					</Form.Field>
+
+					<Form.Field>
 						<label>Cover Photo</label>
 						<input type='file'
 						name='photo'
@@ -132,7 +167,7 @@ class AddBookModal extends Component{
 						name='value'
 						loading={this.state.isLoading}
 						onResultSelect={this.handleResultSelect}
-						onSearchChange={_.debounce(this.handleSearchChange, 400, { leading: false })}
+						onSearchChange={_.debounce(this.handleSearchChange, 800, { leading: false })}
 						results={this.state.results}
 						value={this.state.value}
 						placeholder='Start typing an address...'
